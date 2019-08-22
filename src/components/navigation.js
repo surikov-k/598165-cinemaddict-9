@@ -1,11 +1,33 @@
-export const getNavigationTemplate = () => {
+const getFilters = (movies) => {
+  return [
+    {
+      name: `Watchlist`,
+      count: movies.filter((movie) => movie.isAddedToWatchlist).length
+    },
+    {
+      name: `History`,
+      count: movies.filter((movie) => movie.isWatched).length
+    },
+    {
+      name: `Favorites`,
+      count: movies.filter((movie) => movie.isFavorite).length
+    },
+  ];
+};
+
+export const getNavigationTemplate = (movies) => {
   return `
     <nav class="main-navigation">
-      <a href="#all" class="main-navigation__item main-navigation__item--active">All movies</a>
-      <a href="#watchlist" class="main-navigation__item">Watchlist <span class="main-navigation__item-count">13</span></a>
-      <a href="#history" class="main-navigation__item">History <span class="main-navigation__item-count">4</span></a>
-      <a href="#favorites" class="main-navigation__item">Favorites <span class="main-navigation__item-count">8</span></a>
+    <a href="#all" class="main-navigation__item main-navigation__item--active">All movies</a>
+    ${getFilters(movies).map((filter) => {
+    return `<a href="#${filter.name.toLowerCase()}" class="main-navigation__item">${filter.name}
+      <span class="main-navigation__item-count">${filter.count}</span>
+      </a>`;
+  }).join(``)}
+
+
       <a href="#stats" class="main-navigation__item main-navigation__item--additional">Stats</a>
     </nav>
   `;
 };
+
