@@ -46,13 +46,13 @@ export default class FilmsListExtra {
   }
 
   _getTwoMostRated() {
-    return state.movies.slice().sort((a, b) => {
+    return state.films.slice().sort((a, b) => {
       return b.rating - a.rating;
     }).slice(0, 2);
   }
 
   _getTwoMostCommented() {
-    return state.movies.slice().sort((a, b) => {
+    return state.films.slice().sort((a, b) => {
       return FilmCard.calculateComments(b.title, state.comments) - FilmCard.calculateComments(a.title, state.comments);
     }).slice(0, 2);
   }

@@ -6,15 +6,15 @@ export default class Navigation {
     this._filters = [
       {
         name: `Watchlist`,
-        count: state.movies.filter((movie) => movie.isAddedToWatchlist).length
+        count: state.films.filter((movie) => movie.isAddedToWatchlist).length
       },
       {
         name: `History`,
-        count: state.movies.filter((movie) => movie.isWatched).length
+        count: state.films.filter((movie) => movie.isWatched).length
       },
       {
         name: `Favorites`,
-        count: state.movies.filter((movie) => movie.isFavorite).length
+        count: state.films.filter((movie) => movie.isFavorite).length
       },
     ];
     this._element = null;

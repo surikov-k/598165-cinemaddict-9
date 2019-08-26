@@ -1,6 +1,5 @@
-import {createElement} from '../utils';
+import {createElement, render} from '../utils';
 import FilmsList from './films-list';
-import {render} from '../utils';
 import FilmsListExtra, {filmsListType} from './films-list-extra';
 
 export default class FilmsSection {

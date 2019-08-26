@@ -3,6 +3,7 @@ import Profile from './components/profile';
 import Navigation from './components/navigation';
 import Sorting from './components/sorting';
 import FilmsSection from './components/films-section';
+import SearchNoResult from './components/search-no-result';
 
 import {user, getFilms, getComments} from './data';
 import {render} from './utils';
@@ -10,13 +11,13 @@ import {render} from './utils';
 export const CARDS_PER_CLICK = 5;
 const initalState = {
   cardsDisplayed: 0,
-  movies: [],
+  films: [],
   comments: []
 };
 
 export const state = Object.assign({}, initalState);
 
-state.movies = getFilms();
+state.films = getFilms();
 state.comments = getComments();
 
 const header = document.querySelector(`.header`);
@@ -27,5 +28,10 @@ render(header, new Search().getElement());
 render(header, new Profile(user).getElement());
 render(main, new Navigation().getElement());
 render(main, new Sorting().getElement());
-render(main, new FilmsSection().getElement());
+
+if (state.films.length) {
+  render(main, new FilmsSection().getElement());
+} else {
+  render(main, new SearchNoResult().getElement());
+}
 
