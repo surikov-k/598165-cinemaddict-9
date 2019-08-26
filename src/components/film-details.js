@@ -22,11 +22,27 @@ export default class FilmDetails {
 
     this._element = null;
     this._closePopup = this.closePopup.bind(this);
+    this._onEscKeydown = this._onEscKeydown.bind(this);
   }
 
   getElement() {
     if (!this._element) {
       this._element = createElement(this.getTemplate());
+
+      document.addEventListener(`keydown`, this._onEscKeydown);
+
+      this._element
+        .querySelector(`.film-details__comment-input`)
+        .addEventListener(`focus`, () => {
+          document.removeEventListener(`keydown`, this._onEscKeydown);
+        });
+
+      this._element
+        .querySelector(`.film-details__comment-input`)
+        .addEventListener(`blur`, () => {
+          document.addEventListener(`keydown`, this._onEscKeydown);
+        });
+
       this._element
         .querySelector(`.film-details__close-btn`)
         .addEventListener(`click`, this._closePopup);
@@ -167,5 +183,12 @@ export default class FilmDetails {
                 </div>
               </form>
             </section>`;
+  }
+
+  _onEscKeydown(evt) {
+    if (evt.key === `Esc` || evt.key === `Escape`) {
+      this.closePopup();
+      document.removeEventListener(`keydown`, this._onEscKeydown);
+    }
   }
 }

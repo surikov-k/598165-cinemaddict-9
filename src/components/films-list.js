@@ -20,7 +20,7 @@ export default class FilmsList {
 
       showMore.getElement().addEventListener(`click`, () => {
         this.showCards(filmsListContainer);
-        if (state.cardsDisplayed >= state.movies.length) {
+        if (state.cardsDisplayed >= state.films.length) {
           showMore.getElement().remove();
         }
       });
@@ -33,7 +33,7 @@ export default class FilmsList {
   }
 
   showCards(container) {
-    state.movies.slice(state.cardsDisplayed, state.cardsDisplayed + CARDS_PER_CLICK).forEach((film) => {
+    state.films.slice(state.cardsDisplayed, state.cardsDisplayed + CARDS_PER_CLICK).forEach((film) => {
       const filmCard = new FilmCard(film);
       render(container, filmCard.getElement());
 
