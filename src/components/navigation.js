@@ -1,33 +1,47 @@
-const getFilters = (movies) => {
-  return [
-    {
-      name: `Watchlist`,
-      count: movies.filter((movie) => movie.isAddedToWatchlist).length
-    },
-    {
-      name: `History`,
-      count: movies.filter((movie) => movie.isWatched).length
-    },
-    {
-      name: `Favorites`,
-      count: movies.filter((movie) => movie.isFavorite).length
-    },
-  ];
-};
+import {createElement} from "../utils";
+import {state} from '../main';
 
-export const getNavigationTemplate = (movies) => {
-  return `
-    <nav class="main-navigation">
-    <a href="#all" class="main-navigation__item main-navigation__item--active">All movies</a>
-    ${getFilters(movies).map((filter) => {
+export default class Navigation {
+  constructor() {
+    this._filters = [
+      {
+        name: `Watchlist`,
+        count: state.movies.filter((movie) => movie.isAddedToWatchlist).length
+      },
+      {
+        name: `History`,
+        count: state.movies.filter((movie) => movie.isWatched).length
+      },
+      {
+        name: `Favorites`,
+        count: state.movies.filter((movie) => movie.isFavorite).length
+      },
+    ];
+    this._element = null;
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+
+  getTemplate() {
+    return `<nav class="main-navigation">
+            <a href="#all" class="main-navigation__item main-navigation__item--active">All movies</a>
+            ${this._filters.map(this._getFilterTemplate).join(``)}
+              <a href="#stats" class="main-navigation__item main-navigation__item--additional">Stats</a>
+            </nav>`;
+  }
+
+  _getFilterTemplate(filter) {
     return `<a href="#${filter.name.toLowerCase()}" class="main-navigation__item">${filter.name}
-      <span class="main-navigation__item-count">${filter.count}</span>
-      </a>`;
-  }).join(``)}
-
-
-      <a href="#stats" class="main-navigation__item main-navigation__item--additional">Stats</a>
-    </nav>
-  `;
-};
-
+              <span class="main-navigation__item-count">${filter.count}</span>
+              </a>`;
+  }
+}

@@ -3,12 +3,6 @@ const TOTAL_COMMENTS = Math.round(Math.random() * 100 + 10);
 const CINEMA_EPOCH_STARTED = `1900-1-1`;
 const SERVICE_STARTED = `2018-1-1`;
 
-const UserRating = {
-  beginner: `Novice`,
-  intermediate: `Fan`,
-  advanced: `Movie Buff`
-};
-
 const EmotionType = {
   sleeping: `sleeping`,
   neutralFace: `neutral-face`,
@@ -17,12 +11,23 @@ const EmotionType = {
 
 const emotions = [EmotionType.sleeping, EmotionType.neutralFace, EmotionType.grinning];
 
-const userNames = [
-  `Tim Macoveev`,
-  `John Doe`
+const firstNames = [
+  `Anthony`, `Anne`, `Heinz`, `Richard`, `Erich`, `Mary Beth`, `Dan`, `Tim`, `John`
 ];
 
-const movieTitles = [
+const secondNames = [
+  `Mann`,
+  `Wigton`,
+  `Herald`,
+  `Weil`,
+  `von Stroheim`,
+  `Hughes`,
+  `Duryea`,
+  `Macoveev`,
+  `Doe`
+];
+
+const filmTitles = [
   `Made for Each Other`,
   `Popeye the Sailor Meets Sindbad the Sailor`,
   `Sagebrush trail`,
@@ -32,7 +37,7 @@ const movieTitles = [
   `The Man with the Golden Arm`
 ];
 
-const moviePosterURLs = [
+const filmPosterURLs = [
   `images/posters/made-for-each-other.png`,
   `images/posters/popeye-meets-sinbad.png`,
   `images/posters/sagebrush-trail.jpg`,
@@ -54,7 +59,7 @@ const descriptionPhrases = [
   `In rutrum ac purus sit amet tempus.`
 ];
 
-const movieGenres = [
+const genres = [
   `Musical`,
   `Western`,
   `Drama`,
@@ -63,20 +68,10 @@ const movieGenres = [
   `Mystery`
 ];
 
+const countries = [`USA`, `France`, `Italy`, `Russia`];
+
 export const user = {
   moviesWatched: Math.round(Math.random() * 30),
-};
-
-export const getUserRating = (rating) => {
-  if (rating <= 10) {
-    return UserRating.beginner;
-  } else if (rating >= 11 && rating <= 20) {
-    return UserRating.intermediate;
-  } else if (rating >= 21) {
-    return UserRating.advanced;
-  } else {
-    return undefined;
-  }
 };
 
 const getRandomFromArray = (array) => {
@@ -90,18 +85,37 @@ const shuffleArray = (array) => {
 const getRandomDate = (inception) => {
   const start = new Date(inception);
   const current = new Date();
-  return new Date(Math.round(Math.random() * (current.getTime() - start.getTime()) + start.getTime()));
+  return new Date(Math.round(Math.random() * (current.getTime() - start.getTime() + start.getTime())));
 };
 
-const getMovie = () => {
+const getRandomPerson = () => {
+  return `${getRandomFromArray(firstNames)} ${getRandomFromArray(secondNames)}`;
+};
+
+const getFilm = () => {
   return {
-    title: getRandomFromArray(movieTitles),
-    poster: getRandomFromArray(moviePosterURLs),
+    title: getRandomFromArray(filmTitles),
+
+    get originalTitle() {
+      let title = [...this.title.toLowerCase()].reverse().join(``);
+      title = title.split(` `).map((word) => {
+        if (word.length > 3) {
+          return word.charAt(0).toUpperCase() + word.slice(1);
+        }
+        return word;
+      });
+      return title.join(` `);
+    },
+    director: getRandomPerson(),
+    writres: new Array(Math.floor(Math.random() * 2 + 1)).fill(`a`).map(() => getRandomPerson()),
+    actors: new Array(Math.floor(Math.random() * 4 + 2)).fill(``).map(() => getRandomPerson()),
+    poster: getRandomFromArray(filmPosterURLs),
     rating: parseFloat(Math.random() * 8 + 1).toFixed(1),
     created: getRandomDate(CINEMA_EPOCH_STARTED),
     duration: Math.round(Math.random() * 120 + 60),
-    genres: new Set(shuffleArray(movieGenres).slice(0, Math.floor(Math.random() * 2 + 1))),
-    description: shuffleArray(descriptionPhrases).slice(0, Math.floor(Math.random() * 3 + 1)).join(` `),
+    country: getRandomFromArray(countries),
+    genres: new Set(shuffleArray(genres).slice(0, Math.floor(Math.random() * 2 + 1))),
+    description: shuffleArray(descriptionPhrases).slice(0, Math.floor(Math.random() * 5 + 1)).join(` `),
     isAddedToWatchlist: Boolean(Math.round(Math.random())),
     isFavorite: Boolean(Math.round(Math.random())),
     isWatched: Boolean(Math.round(Math.random()))
@@ -110,16 +124,16 @@ const getMovie = () => {
 
 const getComment = () => {
   return {
-    movieTitle: getRandomFromArray(movieTitles),
+    movieTitle: getRandomFromArray(filmTitles),
     text: getRandomFromArray(descriptionPhrases),
-    user: getRandomFromArray(userNames),
+    user: getRandomPerson(),
     created: getRandomDate(SERVICE_STARTED),
     emotion: getRandomFromArray(emotions)
   };
 };
 
-export const getMovies = () => {
-  return new Array(TOTAL_MOVIES).fill(``).map(getMovie);
+export const getFilms = () => {
+  return new Array(TOTAL_MOVIES).fill(``).map(getFilm);
 };
 
 export const getComments = () => {
