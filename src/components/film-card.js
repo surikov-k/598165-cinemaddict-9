@@ -1,9 +1,9 @@
-import {createElement, render} from "../utils";
-import {state} from '../main';
-import FilmDetails from "./film-details";
+import AbstractComponet from "./abstract-component";
 
-export default class FilmCard {
+import {getComments} from '../data';
+export default class FilmCard extends AbstractComponet {
   constructor(film) {
+    super();
     this._film = film;
     this._title = film.title;
     this._poster = film.poster;
@@ -15,37 +15,11 @@ export default class FilmCard {
     this._isAddedToWatchlist = film.isAddedToWatchlist;
     this._isFavorite = film.isFavorite;
     this._isWatched = film.isWatched;
-
-    this._element = null;
   }
 
   static calculateComments(title) {
-    return state.comments.filter((comment) => comment.movieTitle === title).length;
-  }
-
-  static formatDuration(duration) {
-    const hours = parseInt(duration / 60, 10);
-    return `${hours}h ${duration - hours * 60}m`;
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-      this._element
-        .querySelector(`.film-card__poster`)
-        .addEventListener(`click`, () => {
-          this.onClick();
-        });
-    }
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
-  }
-
-  onClick() {
-    render(document.querySelector(`body`), new FilmDetails(this._film).getElement());
+    const comments = getComments();
+    return comments.filter((comment) => comment.movieTitle === title).length;
   }
 
 
@@ -55,7 +29,7 @@ export default class FilmCard {
             <p class="film-card__rating">${this._rating}</p>
             <p class="film-card__info">
               <span class="film-card__year">${this._created.getFullYear()}</span>
-              <span class="film-card__duration">${FilmCard.formatDuration(this._duration)}</span>
+              <span class="film-card__duration">${this._duration}</span>
               <span class="film-card__genre">${[...this._genres][0]}</span>
             </p>
             <img src="${this._poster}" alt="" class="film-card__poster">
