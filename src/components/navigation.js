@@ -1,34 +1,21 @@
-import {createElement} from "../utils";
-import {state} from '../main';
-
-export default class Navigation {
-  constructor() {
+import AbstractComponet from "./abstract-component";
+export default class Navigation extends AbstractComponet {
+  constructor(films) {
+    super();
     this._filters = [
       {
         name: `Watchlist`,
-        count: state.films.filter((movie) => movie.isAddedToWatchlist).length
+        count: films.filter((film) => film.isAddedToWatchlist).length
       },
       {
         name: `History`,
-        count: state.films.filter((movie) => movie.isWatched).length
+        count: films.filter((film) => film.isWatched).length
       },
       {
         name: `Favorites`,
-        count: state.films.filter((movie) => movie.isFavorite).length
+        count: films.filter((film) => film.isFavorite).length
       },
     ];
-    this._element = null;
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 
   getTemplate() {

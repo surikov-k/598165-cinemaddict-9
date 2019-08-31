@@ -1,8 +1,9 @@
-import {createElement, unrender} from "../utils";
-import FilmCard from "./film-card";
+import AbstractComponet from "./abstract-component";
 
-export default class FilmDetails {
+export default class FilmDetails extends AbstractComponet {
   constructor(film) {
+    super();
+
     this._film = film;
     this._title = film.title;
     this._originalTitle = film.originalTitle;
@@ -19,44 +20,6 @@ export default class FilmDetails {
     this._isAddedToWatchlist = film.isAddedToWatchlist;
     this._isFavorite = film.isFavorite;
     this._isWatched = film.isWatched;
-
-    this._element = null;
-    this._closePopup = this.closePopup.bind(this);
-    this._onEscKeydown = this._onEscKeydown.bind(this);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-
-      document.addEventListener(`keydown`, this._onEscKeydown);
-
-      this._element
-        .querySelector(`.film-details__comment-input`)
-        .addEventListener(`focus`, () => {
-          document.removeEventListener(`keydown`, this._onEscKeydown);
-        });
-
-      this._element
-        .querySelector(`.film-details__comment-input`)
-        .addEventListener(`blur`, () => {
-          document.addEventListener(`keydown`, this._onEscKeydown);
-        });
-
-      this._element
-        .querySelector(`.film-details__close-btn`)
-        .addEventListener(`click`, this._closePopup);
-    }
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
-  }
-
-  closePopup() {
-    unrender(this._element);
-    this.removeElement();
   }
 
   getTemplate() {
@@ -104,7 +67,7 @@ export default class FilmDetails {
                         </tr>
                         <tr class="film-details__row">
                           <td class="film-details__term">Runtime</td>
-                          <td class="film-details__cell">${FilmCard.formatDuration(this._duration)}</td>
+                          <td class="film-details__cell">${this._duration}</td>
                         </tr>
                         <tr class="film-details__row">
                           <td class="film-details__term">Country</td>
@@ -183,12 +146,5 @@ export default class FilmDetails {
                 </div>
               </form>
             </section>`;
-  }
-
-  _onEscKeydown(evt) {
-    if (evt.key === `Esc` || evt.key === `Escape`) {
-      this.closePopup();
-      document.removeEventListener(`keydown`, this._onEscKeydown);
-    }
   }
 }

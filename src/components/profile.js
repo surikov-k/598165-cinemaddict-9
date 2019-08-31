@@ -1,25 +1,14 @@
-import {createElement} from '../utils';
+import AbstractComponet from "./abstract-component";
 
 const UserRating = {
   beginner: `Novice`,
   intermediate: `Fan`,
   advanced: `Movie Buff`
 };
-export default class Profile {
+export default class Profile extends AbstractComponet {
   constructor({moviesWatched}) {
+    super();
     this._moviesWatched = moviesWatched;
-    this._element = null;
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 
   getTemplate() {

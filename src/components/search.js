@@ -1,19 +1,5 @@
-import {createElement} from '../utils';
-export default class Search {
-  constructor() {
-    this._element = null;
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
-  }
+import AbstractComponet from './abstract-component';
+export default class Search extends AbstractComponet {
 
   getTemplate() {
     return `<form class="header__search search">

@@ -92,6 +92,11 @@ const getRandomPerson = () => {
   return `${getRandomFromArray(firstNames)} ${getRandomFromArray(secondNames)}`;
 };
 
+const formatDuration = (duration) => {
+  const hours = parseInt(duration / 60, 10);
+  return `${hours}h ${duration - hours * 60}m`;
+};
+
 const getFilm = () => {
   return {
     title: getRandomFromArray(filmTitles),
@@ -112,7 +117,7 @@ const getFilm = () => {
     poster: getRandomFromArray(filmPosterURLs),
     rating: parseFloat(Math.random() * 8 + 1).toFixed(1),
     created: getRandomDate(CINEMA_EPOCH_STARTED),
-    duration: Math.round(Math.random() * 120 + 60),
+    duration: formatDuration(Math.round(Math.random() * 120 + 60)),
     country: getRandomFromArray(countries),
     genres: new Set(shuffleArray(genres).slice(0, Math.floor(Math.random() * 2 + 1))),
     description: shuffleArray(descriptionPhrases).slice(0, Math.floor(Math.random() * 5 + 1)).join(` `),

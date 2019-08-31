@@ -1,16 +1,6 @@
-import {createElement} from "../utils";
+import AbstractComponet from "./abstract-component";
 
-export default class SearchNoResult {
-  constructor() {
-    this._element = null;
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
-  }
+export default class SearchNoResult extends AbstractComponet {
   getTemplate() {
     return `<div class="no-result">
               There is no movies for your request.
