@@ -3,7 +3,6 @@ import AbstractComponet from "./abstract-component";
 export default class FilmDetails extends AbstractComponet {
   constructor(film) {
     super();
-
     this._film = film;
     this._title = film.title;
     this._originalTitle = film.originalTitle;

@@ -5,8 +5,8 @@ import {render} from "../utils";
 export default class CardController {
   constructor(container, data) {
     this._container = container;
-    this._card = new FilmCard(data);
-    this._cardDetails = new FilmDetails(data);
+    this._card = new FilmCard(data.film, data.comments);
+    this._cardDetails = new FilmDetails(data.film);
 
     this._onEscKeydown = this._onEscKeydown.bind(this);
   }

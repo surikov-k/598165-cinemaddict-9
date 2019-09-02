@@ -112,7 +112,7 @@ const getFilm = () => {
       return title.join(` `);
     },
     director: getRandomPerson(),
-    writres: new Array(Math.floor(Math.random() * 2 + 1)).fill(`a`).map(() => getRandomPerson()),
+    writres: new Array(Math.floor(Math.random() * 2 + 1)).fill(``).map(() => getRandomPerson()),
     actors: new Array(Math.floor(Math.random() * 4 + 2)).fill(``).map(() => getRandomPerson()),
     poster: getRandomFromArray(filmPosterURLs),
     rating: parseFloat(Math.random() * 8 + 1).toFixed(1),
@@ -129,7 +129,7 @@ const getFilm = () => {
 
 const getComment = () => {
   return {
-    movieTitle: getRandomFromArray(filmTitles),
+    filmTitle: getRandomFromArray(filmTitles),
     text: getRandomFromArray(descriptionPhrases),
     user: getRandomPerson(),
     created: getRandomDate(SERVICE_STARTED),
