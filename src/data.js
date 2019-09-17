@@ -101,16 +101,7 @@ const getFilm = () => {
   return {
     title: getRandomFromArray(filmTitles),
 
-    get originalTitle() {
-      let title = [...this.title.toLowerCase()].reverse().join(``);
-      title = title.split(` `).map((word) => {
-        if (word.length > 3) {
-          return word.charAt(0).toUpperCase() + word.slice(1);
-        }
-        return word;
-      });
-      return title.join(` `);
-    },
+    originalTitle: getRandomFromArray(filmTitles),
     director: getRandomPerson(),
     writres: new Array(Math.floor(Math.random() * 2 + 1)).fill(``).map(() => getRandomPerson()),
     actors: new Array(Math.floor(Math.random() * 4 + 2)).fill(``).map(() => getRandomPerson()),
@@ -146,3 +137,14 @@ export const getComments = () => {
 };
 
 export const moviesInside = Math.round(Math.random * 200000 + 50000);
+
+// get originalTitle() {
+//   let title = [...this.title.toLowerCase()].reverse().join(``);
+//   title = title.split(` `).map((word) => {
+//     if (word.length > 3) {
+//       return word.charAt(0).toUpperCase() + word.slice(1);
+//     }
+//     return word;
+//   });
+//   return title.join(` `);
+// },

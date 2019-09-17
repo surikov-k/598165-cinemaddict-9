@@ -1,4 +1,6 @@
 import AbstractComponet from "./abstract-component";
+import UserRating from "./user-rating";
+import {render} from "../utils";
 
 export default class FilmDetails extends AbstractComponet {
   constructor(film) {
@@ -19,6 +21,10 @@ export default class FilmDetails extends AbstractComponet {
     this._isAddedToWatchlist = film.isAddedToWatchlist;
     this._isFavorite = film.isFavorite;
     this._isWatched = film.isWatched;
+
+    this._userRating = new UserRating(this._film);
+
+    this._subscribeToEvents();
   }
 
   getTemplate() {
@@ -104,6 +110,8 @@ export default class FilmDetails extends AbstractComponet {
                   </section>
                 </div>
 
+                <div class="form-details__middle-container"></div>
+
                 <div class="form-details__bottom-container">
                   <section class="film-details__comments-wrap">
                     <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">0</span></h3>
@@ -145,5 +153,43 @@ export default class FilmDetails extends AbstractComponet {
                 </div>
               </form>
             </section>`;
+  }
+
+  _subscribeToEvents() {
+    this._showUserRating();
+    this._changeImoji();
+  }
+
+  _showUserRating() {
+    if (this._isWatched) {
+      render(this.getElement().querySelector(`.form-details__middle-container`), this._userRating.getElement());
+    }
+  }
+
+  _changeImoji() {
+    const addEmojiLabel = this.getElement()
+      .querySelector(`.film-details__add-emoji-label img`);
+
+
+    this.getElement()
+      .querySelector(`.film-details__emoji-list`)
+      .addEventListener(`click`, (evt) => {
+        if (evt.target.tagName === `INPUT`) {
+          switch (evt.target.id) {
+            case `emoji-smile`:
+              addEmojiLabel.src = `images/emoji/smile.png`;
+              break;
+            case `emoji-sleeping`:
+              addEmojiLabel.src = `images/emoji/sleeping.png`;
+              break;
+            case `emoji-gpuke`:
+              addEmojiLabel.src = `images/emoji/puke.png`;
+              break;
+            case `emoji-angry`:
+              addEmojiLabel.src = `images/emoji/angry.png`;
+              break;
+          }
+        }
+      });
   }
 }
