@@ -15,6 +15,7 @@ export default class FilmCard extends AbstractComponet {
     this._isFavorite = film.isFavorite;
     this._isWatched = film.isWatched;
     this._comments = comments.filter((comment) => comment.filmTitle === this._title).length;
+
   }
 
   getTemplate() {

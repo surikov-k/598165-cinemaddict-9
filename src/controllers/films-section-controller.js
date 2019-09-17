@@ -29,15 +29,20 @@ export default class FilmsSectonController {
     this._cardsDisplayed = CARDS_PER_CLICK;
     this._sortingState = `default`;
 
+    this._subscriptions = [];
+
+    this._onDataChange = this._onDataChange.bind(this);
+    this._onViewChange = this._onViewChange.bind(this);
+
   }
 
   init() {
     if (this._films.length) {
       render(document.querySelector(`.main`), this._sort.getElement());
-      this._sort.getElement().addEventListener(`click`, (evt) => this._onSortLinkClick(evt));
+      this._sort.getElement()
+        .addEventListener(`click`, (evt) => this._onSortLinkClick(evt));
 
       render(this._filmsSection.getElement(), this._filmsList.getElement());
-
 
       const filmsListContainer =
         this._filmsList
@@ -81,7 +86,6 @@ export default class FilmsSectonController {
 
   showCards(container, span, sorting) {
 
-    container.innerHTML = ``;
     const filmsToDisplay = this._films.slice();
 
     switch (sorting || this._sortingState) {
@@ -114,7 +118,9 @@ export default class FilmsSectonController {
   }
 
   showCard(container, film) {
-    const cardController = new CardController(container, {film, comments: this._comments});
+    const cardController = new CardController(container, film, this._comments, this._onDataChange, this._onViewChange);
+
+    this._subscriptions.push(cardController);
     cardController.init();
   }
 
@@ -138,6 +144,29 @@ export default class FilmsSectonController {
 
     this._sortingState = evt.target.dataset.sortType;
 
+
     this.showCards(filmsListContainer, this._cardsDisplayed);
+  }
+
+  _onDataChange(newData, oldData) {
+    const idx = this._films.findIndex((film) => film === oldData);
+    Object.assign(this._films[idx], newData);
+
+    // this.showCards(this._filmsList.getElement()
+    //   .querySelector(`.films-list__container`), this._cardsDisplayed);
+
+    // this.showCards(this._topRated.getElement()
+    //   .querySelector(`.films-list__container`), 2, `rating`);
+
+    // this.showCards(this._mostCommented.getElement()
+    //   .querySelector(`.films-list__container`), 2, `most commented`);
+
+
+    this._subscriptions.forEach((sub) => sub.redraw());
+
+  }
+
+  _onViewChange() {
+    this._subscriptions.forEach((it) => it.setDefaultView());
   }
 }
