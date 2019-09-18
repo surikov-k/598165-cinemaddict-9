@@ -3,26 +3,30 @@ import FilmDetails from "../components/film-details";
 import {render} from "../utils";
 
 export default class CardController {
-  constructor(container, film, comments, onDataChange, onViewChange) {
+  constructor(container, film, comments, onDataChange, onViewChange, onFilmDetailsOpen, showDetails) {
     this._container = container;
     this._film = film;
     this._comments = comments;
     this._card = new FilmCard(this._film, this._comments);
     this._cardDetails = new FilmDetails(this._film);
-    this._isCardDetailsOpen = false;
+    this._showDetails = showDetails;
 
     this._onDataChange = onDataChange;
     this._onViewChange = onViewChange;
+    this._onFilmDetailsOpen = onFilmDetailsOpen;
 
     this._onEscKeydown = this._onEscKeydown.bind(this);
     this.setDefaultView = this.setDefaultView.bind(this);
-    this.redraw = this.redraw.bind(this);
   }
 
   init() {
     const filmUpdated = Object.assign({}, this._film);
-
     render(this._container, this._card.getElement());
+
+    if (this._showDetails && !document.body.contains(document.querySelector(`.film-details`))) {
+      this._cardDetails.getElement().style.animationDuration = `0s`;
+      this.showCardDetails();
+    }
 
     this._card.getElement()
       .addEventListener(`click`, (evt) => {
@@ -33,11 +37,10 @@ export default class CardController {
 
           this._onViewChange();
           this.showCardDetails();
-          this._isCardDetailsOpen = true;
+          this._onFilmDetailsOpen(this._film);
 
         }
       });
-
 
     this._card
       .getElement()
@@ -67,10 +70,9 @@ export default class CardController {
 
             classList.toggle(`film-card__controls-item--active`);
             filmUpdated.isFavorite = !filmUpdated.isFavorite;
-            this._onDataChange(this.filmUpdated, this._film);
+            this._onDataChange(filmUpdated, this._film);
 
           }
-
         });
       });
 
@@ -85,27 +87,27 @@ export default class CardController {
 
             filmUpdated.isAddedToWatchlist = !filmUpdated.isAddedToWatchlist;
             this._onDataChange(filmUpdated, this._film);
+            this._cardDetails.removeElement();
 
           } else if (evt.target.getAttribute(`for`) === `watched`) {
 
             filmUpdated.isWatched = !filmUpdated.isWatched;
             this._onDataChange(filmUpdated, this._film);
+            this._cardDetails.removeElement();
 
           } else if (evt.target.getAttribute(`for`) === `favorite`) {
 
             filmUpdated.isFavorite = !filmUpdated.isFavorite;
             this._onDataChange(filmUpdated, this._film);
+            this._cardDetails.removeElement();
           }
         });
       });
-
-
   }
 
   showCardDetails() {
 
     render(document.querySelector(`body`), this._cardDetails.getElement());
-
     document.addEventListener(`keydown`, this._onEscKeydown);
 
     this._cardDetails.getElement()
@@ -124,17 +126,17 @@ export default class CardController {
       .querySelector(`.film-details__close-btn`)
       .addEventListener(`click`, () => {
         this._cardDetails.getElement().remove();
-        this._isCardDetailsOpen = false;
+        this._onFilmDetailsOpen();
       });
   }
 
   _onEscKeydown(evt) {
-    evt.preventDefault();
 
     if (evt.key === `Esc` || evt.key === `Escape`) {
-      this._cardDetails.getElement().remove();
-      this._isCardDetailsOpen = false;
+      evt.preventDefault();
+      this._onFilmDetailsOpen();
 
+      this._cardDetails.getElement().remove();
       document.removeEventListener(`keydown`, this._onEscKeydown);
     }
   }
@@ -142,23 +144,9 @@ export default class CardController {
   setDefaultView() {
     if (document.body.contains(this._cardDetails.getElement())) {
       this._cardDetails.removeElement();
-      this._isCardDetailsOpen = false;
-    }
-  }
+      document.removeEventListener(`keydown`, this._onEscKeydown);
 
-  redraw() {
-    this._card.removeElement();
-    this._cardDetails.removeElement();
-
-    this._card = new FilmCard(this._film, this._comments);
-    this._cardDetails = new FilmDetails(this._film);
-
-    this.init();
-
-    if (this._isCardDetailsOpen) {
-      this._cardDetails
-        .getElement().style.animationDuration = `0s`;
-      this.showCardDetails();
+      this._onFilmDetailsOpen();
     }
   }
 
