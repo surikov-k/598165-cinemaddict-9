@@ -1,3 +1,5 @@
+import moment from "moment";
+
 import AbstractComponet from "./abstract-component";
 import UserRating from "./user-rating";
 import {render} from "../utils";
@@ -68,7 +70,7 @@ export default class FilmDetails extends AbstractComponet {
                         </tr>
                         <tr class="film-details__row">
                           <td class="film-details__term">Release Date</td>
-                          <td class="film-details__cell">${this._created.toDateString()}</td>
+                          <td class="film-details__cell">${moment(this._created).format(`D MMMM YYYY`)}</td>
                         </tr>
                         <tr class="film-details__row">
                           <td class="film-details__term">Runtime</td>
@@ -120,7 +122,7 @@ export default class FilmDetails extends AbstractComponet {
 
                     <div class="film-details__new-comment">
                       <div for="add-emoji" class="film-details__add-emoji-label">
-                        <img src="images/emoji/smile.png" width="55" height="55" alt="emoji">
+                        <img src="images/emoji/smile.png" width="55" height="55" alt="emoji"></img>
                       </div>
 
                       <label class="film-details__comment-label">
@@ -128,7 +130,7 @@ export default class FilmDetails extends AbstractComponet {
                       </label>
 
                       <div class="film-details__emoji-list">
-                        <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-smile" value="sleeping" checked>
+                        <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-smile" value="sleeping">
                         <label class="film-details__emoji-label" for="emoji-smile">
                           <img src="./images/emoji/smile.png" width="30" height="30" alt="emoji">
                         </label>
@@ -167,9 +169,9 @@ export default class FilmDetails extends AbstractComponet {
   }
 
   _changeImoji() {
-    const addEmojiLabel = this.getElement()
-      .querySelector(`.film-details__add-emoji-label img`);
 
+    const addEmojiLabel = this.getElement().querySelector(`.film-details__add-emoji-label img`);
+    addEmojiLabel.style.display = `none`;
 
     this.getElement()
       .querySelector(`.film-details__emoji-list`)
@@ -189,6 +191,7 @@ export default class FilmDetails extends AbstractComponet {
               addEmojiLabel.src = `images/emoji/angry.png`;
               break;
           }
+          addEmojiLabel.style.display = `block`;
         }
       });
   }
