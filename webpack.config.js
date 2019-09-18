@@ -1,5 +1,5 @@
 const path = require(`path`);
-const MomentLocalesPlugin = require(`moments-locale-webpack-plugin`);
+const MomentLocalesPlugin = require(`moment-locales-webpack-plugin`);
 
 module.exports = {
   entry: `./src/main.js`,
@@ -16,7 +16,7 @@ module.exports = {
   },
   plugins: [
     new MomentLocalesPlugin({
-      localesToKeep: [`en-us`],
+      localesToKeep: [`es-us`],
     }),
   ],
 };
