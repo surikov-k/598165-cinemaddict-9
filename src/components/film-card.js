@@ -1,9 +1,10 @@
 import AbstractComponet from "./abstract-component";
 
 export default class FilmCard extends AbstractComponet {
-  constructor(film, comments) {
+  constructor(film) {
     super();
     this._film = film;
+    this._comments = film.comments;
     this._title = film.title;
     this._poster = film.poster;
     this._rating = film.rating;
@@ -14,8 +15,6 @@ export default class FilmCard extends AbstractComponet {
     this._isAddedToWatchlist = film.isAddedToWatchlist;
     this._isFavorite = film.isFavorite;
     this._isWatched = film.isWatched;
-    this._comments = comments.filter((comment) => comment.filmTitle === this._title).length;
-
   }
 
   getTemplate() {
@@ -29,7 +28,7 @@ export default class FilmCard extends AbstractComponet {
             </p>
             <img src="${this._poster}" alt="" class="film-card__poster">
             <p class="film-card__description">${this._tuncateDescription()}</p>
-            <a class="film-card__comments">${this._comments} comments</a>
+            <a class="film-card__comments">${this._comments.length} comments</a>
             <form class="film-card__controls">
               <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist ${this._isAddedToWatchlist ? `film-card__controls-item--active` : ``}">Add to watchlist</button>
               <button class="film-card__controls-item button film-card__controls-item--mark-as-watched ${this._isWatched ? `film-card__controls-item--active` : ``}">Mark as watched</button>

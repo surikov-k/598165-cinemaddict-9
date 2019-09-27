@@ -1,8 +1,6 @@
 import moment from "moment";
 
 import AbstractComponet from "./abstract-component";
-import UserRating from "./user-rating";
-import {render} from "../utils";
 
 export default class FilmDetails extends AbstractComponet {
   constructor(film) {
@@ -23,10 +21,7 @@ export default class FilmDetails extends AbstractComponet {
     this._isAddedToWatchlist = film.isAddedToWatchlist;
     this._isFavorite = film.isFavorite;
     this._isWatched = film.isWatched;
-
-    this._userRating = new UserRating(this._film);
-
-    this._subscribeToEvents();
+    this._userRating = film.userRating;
   }
 
   getTemplate() {
@@ -52,6 +47,8 @@ export default class FilmDetails extends AbstractComponet {
 
                         <div class="film-details__rating">
                           <p class="film-details__total-rating">${this._rating}</p>
+                          ${this._isWatched && this._userRating ? `<p class="film-details__user-rating">Your rate ${this._userRating}</p>` : ``}
+
                         </div>
                       </div>
 
@@ -114,85 +111,7 @@ export default class FilmDetails extends AbstractComponet {
 
                 <div class="form-details__middle-container"></div>
 
-                <div class="form-details__bottom-container">
-                  <section class="film-details__comments-wrap">
-                    <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">0</span></h3>
-
-                    <ul class="film-details__comments-list"></ul>
-
-                    <div class="film-details__new-comment">
-                      <div for="add-emoji" class="film-details__add-emoji-label">
-                        <img src="images/emoji/smile.png" width="55" height="55" alt="emoji"></img>
-                      </div>
-
-                      <label class="film-details__comment-label">
-                        <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">Great movie!</textarea>
-                      </label>
-
-                      <div class="film-details__emoji-list">
-                        <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-smile" value="sleeping">
-                        <label class="film-details__emoji-label" for="emoji-smile">
-                          <img src="./images/emoji/smile.png" width="30" height="30" alt="emoji">
-                        </label>
-
-                        <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-sleeping" value="neutral-face">
-                        <label class="film-details__emoji-label" for="emoji-sleeping">
-                          <img src="./images/emoji/sleeping.png" width="30" height="30" alt="emoji">
-                        </label>
-
-                        <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-gpuke" value="grinning">
-                        <label class="film-details__emoji-label" for="emoji-gpuke">
-                          <img src="./images/emoji/puke.png" width="30" height="30" alt="emoji">
-                        </label>
-
-                        <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-angry" value="grinning">
-                        <label class="film-details__emoji-label" for="emoji-angry">
-                          <img src="./images/emoji/angry.png" width="30" height="30" alt="emoji">
-                        </label>
-                      </div>
-                    </div>
-                  </section>
-                </div>
-              </form>
-            </section>`;
+                <div class="form-details__bottom-container"></div>`;
   }
 
-  _subscribeToEvents() {
-    this._showUserRating();
-    this._changeImoji();
-  }
-
-  _showUserRating() {
-    if (this._isWatched) {
-      render(this.getElement().querySelector(`.form-details__middle-container`), this._userRating.getElement());
-    }
-  }
-
-  _changeImoji() {
-
-    const addEmojiLabel = this.getElement().querySelector(`.film-details__add-emoji-label img`);
-    addEmojiLabel.style.display = `none`;
-
-    this.getElement()
-      .querySelector(`.film-details__emoji-list`)
-      .addEventListener(`click`, (evt) => {
-        if (evt.target.tagName === `INPUT`) {
-          switch (evt.target.id) {
-            case `emoji-smile`:
-              addEmojiLabel.src = `images/emoji/smile.png`;
-              break;
-            case `emoji-sleeping`:
-              addEmojiLabel.src = `images/emoji/sleeping.png`;
-              break;
-            case `emoji-gpuke`:
-              addEmojiLabel.src = `images/emoji/puke.png`;
-              break;
-            case `emoji-angry`:
-              addEmojiLabel.src = `images/emoji/angry.png`;
-              break;
-          }
-          addEmojiLabel.style.display = `block`;
-        }
-      });
-  }
 }

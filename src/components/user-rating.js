@@ -1,9 +1,36 @@
 import AbstractComponet from "./abstract-component";
+import {render} from "../utils";
 
 export default class UserRating extends AbstractComponet {
-  constructor(film) {
+  constructor(film, onDataChange) {
     super();
     this._film = film;
+    this._userRating = film.userRating;
+    this._onDataChange = onDataChange;
+    this._filmUpdated = Object.assign({}, this._film);
+
+  }
+
+  init(container) {
+    render(container, this.getElement());
+
+    this.getElement()
+      .querySelector(`.film-details__user-rating-score`)
+      .addEventListener(`click`, (evt) => {
+        if (evt.target.tagName !== `INPUT`) {
+          return;
+        }
+        this._filmUpdated.userRating = parseInt(evt.target.value, 10);
+        this._onDataChange(this._filmUpdated, this._film);
+      });
+
+    this.getElement()
+      .querySelector(`.film-details__watched-reset`)
+      .addEventListener(`click`, () => {
+        this._filmUpdated.userRating = 0;
+        this._onDataChange(this._filmUpdated, this._film);
+      });
+
   }
 
   getTemplate() {
@@ -23,38 +50,16 @@ export default class UserRating extends AbstractComponet {
           <p class="film-details__user-rating-feelings">How you feel it?</p>
 
           <div class="film-details__user-rating-score">
-            <input type="radio" name="score" class="film-details__user-rating-input visually-hidden" value="1" id="rating-1">
-              <label class="film-details__user-rating-label" for="rating-1">1</label>
-
-              <input type="radio" name="score" class="film-details__user-rating-input visually-hidden" value="2" id="rating-2">
-                <label class="film-details__user-rating-label" for="rating-2">2</label>
-
-                <input type="radio" name="score" class="film-details__user-rating-input visually-hidden" value="3" id="rating-3">
-                  <label class="film-details__user-rating-label" for="rating-3">3</label>
-
-                  <input type="radio" name="score" class="film-details__user-rating-input visually-hidden" value="4" id="rating-4">
-                    <label class="film-details__user-rating-label" for="rating-4">4</label>
-
-                    <input type="radio" name="score" class="film-details__user-rating-input visually-hidden" value="5" id="rating-5">
-                      <label class="film-details__user-rating-label" for="rating-5">5</label>
-
-                      <input type="radio" name="score" class="film-details__user-rating-input visually-hidden" value="6" id="rating-6">
-                        <label class="film-details__user-rating-label" for="rating-6">6</label>
-
-                        <input type="radio" name="score" class="film-details__user-rating-input visually-hidden" value="7" id="rating-7">
-                          <label class="film-details__user-rating-label" for="rating-7">7</label>
-
-                          <input type="radio" name="score" class="film-details__user-rating-input visually-hidden" value="8" id="rating-8">
-                            <label class="film-details__user-rating-label" for="rating-8">8</label>
-
-                            <input type="radio" name="score" class="film-details__user-rating-input visually-hidden" value="9" id="rating-9" checked>
-                              <label class="film-details__user-rating-label" for="rating-9">9</label>
+            ${new Array(9).fill(``).map((it, i) => {
+    return `<input type="radio" name="score" class="film-details__user-rating-input visually-hidden" value="${i + 1}" id="rating-${i + 1}" ${i + 1 === this._userRating ? `checked` : ``}>
+                <label class="film-details__user-rating-label" for="rating-${i + 1}">${i + 1}</label>`;
+  })}
 
             </div>
           </section>
         </div>
       </section>`;
   }
-}
 
+}
 

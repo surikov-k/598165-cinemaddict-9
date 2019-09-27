@@ -2,12 +2,11 @@ import Search from './components/search';
 import Profile from './components/profile';
 import Navigation from './components/navigation';
 
-import {user, getFilms, getComments} from './data';
+import {user, getFilms, comments} from './data';
 import {render} from './utils';
 import FilmsSectonController from './controllers/films-section-controller';
 
 const films = getFilms();
-const comments = getComments();
 
 const header = document.querySelector(`.header`);
 const main = document.querySelector(`.main`);
