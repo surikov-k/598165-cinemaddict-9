@@ -83,7 +83,6 @@ export default class CardController {
         });
       });
 
-
     this._cardDetails
       .getElement()
       .querySelectorAll(`.film-details__control-label`)
@@ -115,6 +114,7 @@ export default class CardController {
       });
   }
 
+
   showCardDetails() {
 
     render(document.querySelector(`body`), this._cardDetails.getElement());
@@ -123,6 +123,7 @@ export default class CardController {
       this._userRating
         .init(this._cardDetails.getElement().querySelector(`.form-details__middle-container`));
     }
+
     this._comments.init(this._cardDetails.getElement());
 
     document.addEventListener(`keydown`, this._onEscKeydown);
@@ -147,6 +148,16 @@ export default class CardController {
       });
   }
 
+
+  setDefaultView() {
+    if (document.body.contains(this._cardDetails.getElement())) {
+      this._cardDetails.removeElement();
+      document.removeEventListener(`keydown`, this._onEscKeydown);
+
+      this._onFilmDetailsOpen();
+    }
+  }
+
   _onEscKeydown(evt) {
 
     if (evt.key === `Esc` || evt.key === `Escape`) {
@@ -155,15 +166,6 @@ export default class CardController {
 
       this._cardDetails.getElement().remove();
       document.removeEventListener(`keydown`, this._onEscKeydown);
-    }
-  }
-
-  setDefaultView() {
-    if (document.body.contains(this._cardDetails.getElement())) {
-      this._cardDetails.removeElement();
-      document.removeEventListener(`keydown`, this._onEscKeydown);
-
-      this._onFilmDetailsOpen();
     }
   }
 

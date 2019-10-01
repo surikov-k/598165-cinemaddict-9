@@ -20,6 +20,7 @@ export default class UserRating extends AbstractComponet {
         if (evt.target.tagName !== `INPUT`) {
           return;
         }
+
         this._filmUpdated.userRating = parseInt(evt.target.value, 10);
         this._onDataChange(this._filmUpdated, this._film);
       });
