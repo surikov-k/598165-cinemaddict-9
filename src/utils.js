@@ -25,3 +25,8 @@ export const unrender = (element) => {
     element.remove();
   }
 };
+
+export const encodeHTML = (s) => {
+  return s.replace(/&/g, `&amp;`).replace(/</g, `&lt;`).replace(/>/g, `&rt;`).replace(/"/g, `&quot;`);
+};
+

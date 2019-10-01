@@ -3,16 +3,30 @@ const TOTAL_COMMENTS = Math.round(Math.random() * 100 + 10);
 const CINEMA_EPOCH_STARTED = `1900-1-1`;
 const SERVICE_STARTED = `2018-1-1`;
 
-const EmotionType = {
-  sleeping: `sleeping`,
-  neutralFace: `neutral-face`,
-  grinning: `grinning`
+export const EmotionType = {
+  SMILE: `smile`,
+  SLEEPING: `sleeping`,
+  PUKE: `puke`,
+  ANGRY: `angry`,
+  src: {
+    'smile': `images/emoji/smile.png`,
+    'sleeping': `images/emoji/sleeping.png`,
+    'puke': `images/emoji/puke.png`,
+    'angry': `images/emoji/angry.png`,
+  }
 };
 
-const emotions = [EmotionType.sleeping, EmotionType.neutralFace, EmotionType.grinning];
+const emotions = [EmotionType.SMILE, EmotionType.SLEEPING, EmotionType.PUKE, EmotionType.ANGRY];
 
 const firstNames = [
   `Anthony`, `Anne`, `Heinz`, `Richard`, `Erich`, `Mary Beth`, `Dan`, `Tim`, `John`
+];
+
+const commentsText = [
+  `Interesting setting and a good cast`,
+  `Booooooooooring`,
+  `Very very old. Meh`,
+  `Almost two hours? Seriously?`,
 ];
 
 const secondNames = [
@@ -99,14 +113,28 @@ const formatDuration = (duration) => {
 
 const getFilm = () => {
   return {
+    id: 0,
     title: getRandomFromArray(filmTitles),
-
-    originalTitle: getRandomFromArray(filmTitles),
+    comments: new Array(Math.round(Math.random() * 5)).fill(``).map(() => getRandomFromArray(comments).id),
+    get originalTitle() {
+      let title = [...this.title.toLowerCase()].reverse().join(``);
+      title = title.split(` `).map((word) => {
+        if (word.length > 3) {
+          return word.charAt(0).toUpperCase() + word.slice(1);
+        }
+        return word;
+      });
+      return title.join(` `);
+    },
+    set originalTitle(value) {
+      return value;
+    },
     director: getRandomPerson(),
     writres: new Array(Math.floor(Math.random() * 2 + 1)).fill(``).map(() => getRandomPerson()),
     actors: new Array(Math.floor(Math.random() * 4 + 2)).fill(``).map(() => getRandomPerson()),
     poster: getRandomFromArray(filmPosterURLs),
     rating: parseFloat(Math.random() * 8 + 1).toFixed(1),
+    ageRating: Math.round(Math.random() * 18),
     created: getRandomDate(CINEMA_EPOCH_STARTED),
     duration: formatDuration(Math.round(Math.random() * 120 + 60)),
     country: getRandomFromArray(countries),
@@ -114,14 +142,15 @@ const getFilm = () => {
     description: shuffleArray(descriptionPhrases).slice(0, Math.floor(Math.random() * 5 + 1)).join(` `),
     isAddedToWatchlist: Boolean(Math.round(Math.random())),
     isFavorite: Boolean(Math.round(Math.random())),
-    isWatched: Boolean(Math.round(Math.random()))
+    isWatched: false,
+    personalRating: 0,
   };
 };
 
 const getComment = () => {
   return {
-    filmTitle: getRandomFromArray(filmTitles),
-    text: getRandomFromArray(descriptionPhrases),
+    id: 0,
+    text: getRandomFromArray(commentsText),
     user: getRandomPerson(),
     created: getRandomDate(SERVICE_STARTED),
     emotion: getRandomFromArray(emotions)
@@ -129,22 +158,23 @@ const getComment = () => {
 };
 
 export const getFilms = () => {
-  return new Array(TOTAL_MOVIES).fill(``).map(getFilm);
+  const films = new Array(TOTAL_MOVIES).fill(``).map(getFilm);
+  films.forEach((film, i) => {
+    film.id = i;
+  });
+  return films;
 };
 
-export const getComments = () => {
-  return new Array(TOTAL_COMMENTS).fill(``).map(getComment);
+const getComments = () => {
+  const comments = new Array(TOTAL_COMMENTS).fill(``).map(getComment);
+  comments.forEach((comment, i) => {
+    comment.id = i;
+  });
+  return comments;
 };
+
+export const comments = getComments();
 
 export const moviesInside = Math.round(Math.random * 200000 + 50000);
 
-// get originalTitle() {
-//   let title = [...this.title.toLowerCase()].reverse().join(``);
-//   title = title.split(` `).map((word) => {
-//     if (word.length > 3) {
-//       return word.charAt(0).toUpperCase() + word.slice(1);
-//     }
-//     return word;
-//   });
-//   return title.join(` `);
-// },
+

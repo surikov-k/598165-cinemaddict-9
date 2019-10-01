@@ -1,18 +1,21 @@
 import FilmCard from "../components/film-card";
 import FilmDetails from "../components/film-details";
 import {render} from "../utils";
+import UserRating from "../components/user-rating";
+import Comments from "../components/comments";
 
 export default class CardController {
   constructor(container, film, comments, onDataChange, onViewChange, onFilmDetailsOpen, showDetails) {
     this._container = container;
     this._film = film;
-    this._comments = comments;
     this._card = new FilmCard(this._film, this._comments);
     this._cardDetails = new FilmDetails(this._film);
-    this._showDetails = showDetails;
+    this._userRating = new UserRating(this._film, onDataChange);
+    this._comments = new Comments(film, comments, onDataChange);
 
     this._onDataChange = onDataChange;
     this._onViewChange = onViewChange;
+    this._showDetails = showDetails;
     this._onFilmDetailsOpen = onFilmDetailsOpen;
 
     this._onEscKeydown = this._onEscKeydown.bind(this);
@@ -63,6 +66,10 @@ export default class CardController {
 
             classList.toggle(`film-card__controls-item--active`);
             filmUpdated.isWatched = !filmUpdated.isWatched;
+            if (!filmUpdated.isWatched) {
+              filmUpdated.userRating = 0;
+            }
+
             this._onDataChange(filmUpdated, this._film);
 
           } else if (classList
@@ -75,7 +82,6 @@ export default class CardController {
           }
         });
       });
-
 
     this._cardDetails
       .getElement()
@@ -92,6 +98,9 @@ export default class CardController {
           } else if (evt.target.getAttribute(`for`) === `watched`) {
 
             filmUpdated.isWatched = !filmUpdated.isWatched;
+            if (!filmUpdated.isWatched) {
+              filmUpdated.userRating = 0;
+            }
             this._onDataChange(filmUpdated, this._film);
             this._cardDetails.removeElement();
 
@@ -105,9 +114,18 @@ export default class CardController {
       });
   }
 
+
   showCardDetails() {
 
     render(document.querySelector(`body`), this._cardDetails.getElement());
+
+    if (this._film.isWatched) {
+      this._userRating
+        .init(this._cardDetails.getElement().querySelector(`.form-details__middle-container`));
+    }
+
+    this._comments.init(this._cardDetails.getElement());
+
     document.addEventListener(`keydown`, this._onEscKeydown);
 
     this._cardDetails.getElement()
@@ -130,6 +148,16 @@ export default class CardController {
       });
   }
 
+
+  setDefaultView() {
+    if (document.body.contains(this._cardDetails.getElement())) {
+      this._cardDetails.removeElement();
+      document.removeEventListener(`keydown`, this._onEscKeydown);
+
+      this._onFilmDetailsOpen();
+    }
+  }
+
   _onEscKeydown(evt) {
 
     if (evt.key === `Esc` || evt.key === `Escape`) {
@@ -138,15 +166,6 @@ export default class CardController {
 
       this._cardDetails.getElement().remove();
       document.removeEventListener(`keydown`, this._onEscKeydown);
-    }
-  }
-
-  setDefaultView() {
-    if (document.body.contains(this._cardDetails.getElement())) {
-      this._cardDetails.removeElement();
-      document.removeEventListener(`keydown`, this._onEscKeydown);
-
-      this._onFilmDetailsOpen();
     }
   }
 
