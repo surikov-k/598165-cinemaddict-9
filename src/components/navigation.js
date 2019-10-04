@@ -42,8 +42,20 @@ export default class Navigation extends AbstractComponet {
               </a>`;
   }
 
-  rerender() {
-    this.getElement().innerHTML = ``;
-    this.getElement().innerHTML = this.getTemplate();
+  update() {
+    this.getElement()
+      .querySelector(`[href="#watchlist"]`)
+      .querySelector(`.main-navigation__item-count`)
+      .innerText = this._films.filter((film) => film.isAddedToWatchlist).length;
+
+    this.getElement()
+      .querySelector(`[href="#history"]`)
+      .querySelector(`.main-navigation__item-count`)
+      .innerText = this._films.filter((film) => film.isWatched).length;
+
+    this.getElement()
+      .querySelector(`[href="#favorites"]`)
+      .querySelector(`.main-navigation__item-count`)
+      .innerText = this._films.filter((film) => film.isFavorite).length;
   }
 }

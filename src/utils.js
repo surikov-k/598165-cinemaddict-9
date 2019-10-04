@@ -30,3 +30,9 @@ export const encodeHTML = (s) => {
   return s.replace(/&/g, `&amp;`).replace(/</g, `&lt;`).replace(/>/g, `&rt;`).replace(/"/g, `&quot;`);
 };
 
+export const formatDuration = (duration) => {
+  const hours = parseInt(duration / 60, 10);
+  return {h: hours, m: duration - hours * 60};
+};
+
+
