@@ -67,7 +67,6 @@ export default class PageController {
     this._navigation.update();
     this._filmsSectionController.show();
     this._statistic.update();
-
   }
 
   _onDataChangeForSearchList() {

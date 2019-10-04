@@ -61,17 +61,6 @@ export default class FilmsSectonController {
       render(this._filmsSection.getElement(), this._filmsList.getElement());
       this.show();
 
-      render(this._filmsSection.getElement(), this._topRated.getElement());
-      const topRatedFilms =
-        this._films.slice().sort((a, b) => b.rating - a.rating).slice(0, 2);
-      this._topRatedCardListController.set(topRatedFilms, this._comments);
-      this._topRatedCardListController.show();
-
-      render(this._filmsSection.getElement(), this._mostCommented.getElement());
-      const mostCommentedFilms = this._films.slice().sort((a, b) => b.comments.length - a.comments.length).slice(0, 2);
-      this._mostCommentedCardListController.set(mostCommentedFilms, this._comments);
-      this._mostCommentedCardListController.show();
-
     } else {
       render(this._container, this._searchNoResults.getElement());
     }
@@ -119,9 +108,9 @@ export default class FilmsSectonController {
       });
     }
 
-
     this._mainCardsListController.set(this._filmsToDisplay.slice(0, this._cardsDisplayed), this._comments);
     this._mainCardsListController.show();
+    this._showExraSection();
   }
 
   setFilter(filter) {
@@ -148,8 +137,7 @@ export default class FilmsSectonController {
 
   _onDataChangeFilmSection() {
     this._mainCardsListController.show();
-    this._topRatedCardListController.show();
-    this._mostCommentedCardListController.show();
+    this._showExraSection();
     this._onDataChangePageController();
   }
 
@@ -157,6 +145,30 @@ export default class FilmsSectonController {
     this._mainCardsListController.onViewChange();
     this._topRatedCardListController.onViewChange();
     this._mostCommentedCardListController.onViewChange();
+  }
+
+  _showExraSection() {
+    const topRatedFilms =
+      this._films.slice()
+      .filter((film) => film.rating)
+      .sort((a, b) => b.rating - a.rating).slice(0, 2);
+
+    const mostCommentedFilms = this._films.slice()
+      .filter((film) => film.comments.length)
+      .sort((a, b) => (b.comments.length - a.comments.length)).slice(0, 2);
+
+    if (topRatedFilms.length) {
+      render(this._filmsSection.getElement(), this._topRated.getElement());
+      this._topRatedCardListController.set(topRatedFilms, this._comments);
+      this._topRatedCardListController.show();
+    }
+
+    if (mostCommentedFilms.length) {
+      render(this._filmsSection.getElement(), this._mostCommented.getElement());
+      this._mostCommentedCardListController
+        .set(mostCommentedFilms, this._comments);
+      this._mostCommentedCardListController.show();
+    }
   }
 
 }

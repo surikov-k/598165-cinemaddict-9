@@ -112,6 +112,7 @@ const getFilm = () => {
   return {
     id: 0,
     title: getRandomFromArray(filmTitles),
+    // comments: [],
     comments: new Array(Math.round(Math.random() * 5)).fill(``).map(() => getRandomFromArray(comments).id),
     get originalTitle() {
       let title = [...this.title.toLowerCase()].reverse().join(``);
@@ -130,6 +131,7 @@ const getFilm = () => {
     writres: new Array(Math.floor(Math.random() * 2 + 1)).fill(``).map(() => getRandomPerson()),
     actors: new Array(Math.floor(Math.random() * 4 + 2)).fill(``).map(() => getRandomPerson()),
     poster: getRandomFromArray(filmPosterURLs),
+    // rating: 0,
     rating: parseFloat(Math.random() * 8 + 1).toFixed(1),
     ageRating: Math.round(Math.random() * 18),
     created: getRandomDate(CINEMA_EPOCH_STARTED),
