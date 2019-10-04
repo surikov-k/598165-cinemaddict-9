@@ -37,6 +37,7 @@ export default class SearchController {
 
   hide() {
     this._searchResults.removeElement();
+    this._filmsSection.removeElement();
   }
 
   setQuery(query) {

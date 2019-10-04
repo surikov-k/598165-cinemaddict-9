@@ -1,6 +1,7 @@
 import moment from "moment";
 
 import AbstractComponet from "./abstract-component";
+import {formatDuration} from "../utils";
 
 export default class FilmDetails extends AbstractComponet {
   constructor(film) {
@@ -71,7 +72,7 @@ export default class FilmDetails extends AbstractComponet {
                         </tr>
                         <tr class="film-details__row">
                           <td class="film-details__term">Runtime</td>
-                          <td class="film-details__cell">${this._duration}</td>
+                          <td class="film-details__cell">${formatDuration(this._duration).h}h ${formatDuration(this._duration).m}m</td>
                         </tr>
                         <tr class="film-details__row">
                           <td class="film-details__term">Country</td>

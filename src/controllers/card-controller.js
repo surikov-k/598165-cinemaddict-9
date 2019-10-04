@@ -68,6 +68,9 @@ export default class CardController {
             filmUpdated.isWatched = !filmUpdated.isWatched;
             if (!filmUpdated.isWatched) {
               filmUpdated.userRating = 0;
+              filmUpdated.watchedDate = null;
+            } else {
+              filmUpdated.watchedDate = new Date();
             }
 
             this._onDataChange(filmUpdated, this._film);
@@ -100,6 +103,9 @@ export default class CardController {
             filmUpdated.isWatched = !filmUpdated.isWatched;
             if (!filmUpdated.isWatched) {
               filmUpdated.userRating = 0;
+              filmUpdated.watchedDate = null;
+            } else {
+              filmUpdated.watchedDate = new Date();
             }
             this._onDataChange(filmUpdated, this._film);
             this._cardDetails.removeElement();

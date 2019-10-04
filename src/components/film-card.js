@@ -1,5 +1,5 @@
 import AbstractComponet from "./abstract-component";
-
+import {formatDuration} from "../utils";
 export default class FilmCard extends AbstractComponet {
   constructor(film) {
     super();
@@ -23,7 +23,7 @@ export default class FilmCard extends AbstractComponet {
             <p class="film-card__rating">${this._rating}</p>
             <p class="film-card__info">
               <span class="film-card__year">${this._created.getFullYear()}</span>
-              <span class="film-card__duration">${this._duration}</span>
+              <span class="film-card__duration">${formatDuration(this._duration).h}h ${formatDuration(this._duration).m}m</span>
               <span class="film-card__genre">${[...this._genres][0]}</span>
             </p>
             <img src="${this._poster}" alt="" class="film-card__poster">

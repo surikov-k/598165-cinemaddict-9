@@ -11,14 +11,7 @@ export default class Profile extends AbstractComponet {
     this._moviesWatched = moviesWatched;
   }
 
-  getTemplate() {
-    return `<section class="header__profile profile">
-            <p class="profile__rating">${this._getUserRating(this._moviesWatched)}</p>
-            <img class="profile__avatar" src="images/bitmap@2x.png" alt="Avatar" width="35" height="35">
-          </section>`;
-  }
-
-  _getUserRating(rating) {
+  static getUserRating(rating) {
     if (rating <= 10) {
       return UserRating.beginner;
     } else if (rating >= 11 && rating <= 20) {
@@ -28,5 +21,12 @@ export default class Profile extends AbstractComponet {
     } else {
       return undefined;
     }
+  }
+
+  getTemplate() {
+    return `<section class="header__profile profile">
+            <p class="profile__rating">${Profile.getUserRating(this._moviesWatched)}</p>
+            <img class="profile__avatar" src="images/bitmap@2x.png" alt="Avatar" width="35" height="35">
+          </section>`;
   }
 }

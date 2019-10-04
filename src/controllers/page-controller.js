@@ -1,7 +1,7 @@
 import FilmsSectonController from './films-section-controller';
 import Statistic from '../components/statistic';
 import Navigation from '../components/navigation';
-import {render} from '../utils';
+import {render, Position} from '../utils';
 import SearchController from './search-controller';
 
 const MIN_SEARCH_QUERY = 3;
@@ -17,7 +17,7 @@ export default class PageController {
     this._onDataChangeForSearchList = this._onDataChangeForSearchList.bind(this);
 
     this._navigation = new Navigation(this._films);
-    this._statistic = new Statistic(this._container);
+    this._statistic = new Statistic(this._container, this._films);
     this._filmsSectionController = new FilmsSectonController(this._container, this._films, this._comments, this._onDataChangeForMainList);
     this._searchController = new SearchController(this._container, this._films, this._comments, this._onDataChangeForSearchList);
     this._filter = ``;
@@ -25,9 +25,8 @@ export default class PageController {
 
   init() {
 
-    render(this._container, this._navigation.getElement());
+    render(this._container, this._navigation.getElement(), Position.AFTERBEGING);
     this._filmsSectionController.init();
-    this._statistic.init();
     this._statistic.hide();
     this._searchInit();
 
@@ -65,13 +64,17 @@ export default class PageController {
   }
 
   _onDataChangeForMainList() {
-    this._navigation.rerender();
+    this._navigation.update();
     this._filmsSectionController.show();
+    this._statistic.update();
+
   }
 
   _onDataChangeForSearchList() {
-    this._navigation.rerender();
+    this._navigation.update();
     this._searchController.show();
+    this._statistic.update();
+
   }
 
   _searchInit() {

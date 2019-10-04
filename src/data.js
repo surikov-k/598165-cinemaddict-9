@@ -1,6 +1,7 @@
 const TOTAL_MOVIES = Math.round(Math.random() * 10 + 10);
 const TOTAL_COMMENTS = Math.round(Math.random() * 100 + 10);
 const CINEMA_EPOCH_STARTED = `1900-1-1`;
+const A_YEAR_FROM_NOW = new Date(Date.now() - 365 * 24 * 60 * 60 * 1000);
 const SERVICE_STARTED = `2018-1-1`;
 
 export const EmotionType = {
@@ -99,17 +100,13 @@ const shuffleArray = (array) => {
 const getRandomDate = (inception) => {
   const start = new Date(inception);
   const current = new Date();
-  return new Date(Math.round(Math.random() * (current.getTime() - start.getTime() + start.getTime())));
+  return new Date(Math.round(Math.random() * (current.getTime() - start.getTime()) + start.getTime()));
 };
 
 const getRandomPerson = () => {
   return `${getRandomFromArray(firstNames)} ${getRandomFromArray(secondNames)}`;
 };
 
-const formatDuration = (duration) => {
-  const hours = parseInt(duration / 60, 10);
-  return `${hours}h ${duration - hours * 60}m`;
-};
 
 const getFilm = () => {
   return {
@@ -136,13 +133,14 @@ const getFilm = () => {
     rating: parseFloat(Math.random() * 8 + 1).toFixed(1),
     ageRating: Math.round(Math.random() * 18),
     created: getRandomDate(CINEMA_EPOCH_STARTED),
-    duration: formatDuration(Math.round(Math.random() * 120 + 60)),
+    duration: Math.round(Math.random() * 120 + 60),
     country: getRandomFromArray(countries),
     genres: new Set(shuffleArray(genres).slice(0, Math.floor(Math.random() * 2 + 1))),
     description: shuffleArray(descriptionPhrases).slice(0, Math.floor(Math.random() * 5 + 1)).join(` `),
     isAddedToWatchlist: Boolean(Math.round(Math.random())),
     isFavorite: Boolean(Math.round(Math.random())),
-    isWatched: false,
+    isWatched: Boolean(Math.round(Math.random())),
+    watchedDate: getRandomDate(A_YEAR_FROM_NOW),
     personalRating: 0,
   };
 };
@@ -176,5 +174,3 @@ const getComments = () => {
 export const comments = getComments();
 
 export const moviesInside = Math.round(Math.random * 200000 + 50000);
-
-

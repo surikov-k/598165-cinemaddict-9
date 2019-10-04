@@ -1,10 +1,26 @@
+import moment from "moment";
 import AbstractComponet from "./abstract-component";
 import {render} from "../utils";
+import StatisticChart from "./statistic-chart";
+import {user} from "../data";
+import Profile from "./profile";
+
+const StatisticType = {
+  ALL_TIME: `all-time`,
+  TODAY: `today`,
+  WEEK: `week`,
+  MONTH: `month`,
+  YEAR: `year`,
+};
 
 export default class Statistic extends AbstractComponet {
-  constructor(container) {
+  constructor(container, films) {
     super();
     this._container = container;
+    this._films = films;
+    this._statisticChart = new StatisticChart(this._films.filter((film) => film.isWatched));
+
+    this._init();
   }
 
   getTemplate() {
@@ -12,7 +28,7 @@ export default class Statistic extends AbstractComponet {
               <p class="statistic__rank">
                 Your rank
                 <img class="statistic__img" src="images/bitmap@2x.png" alt="Avatar" width="35" height="35">
-                <span class="statistic__rank-label">Sci-Fighter</span>
+                <span class="statistic__rank-label">${Profile.getUserRating(user.moviesWatched)}</span>
               </p>
 
               <form action="https://echo.htmlacademy.ru/" method="get" class="statistic__filters">
@@ -34,37 +50,82 @@ export default class Statistic extends AbstractComponet {
                 <label for="statistic-year" class="statistic__filters-label">Year</label>
               </form>
 
-              <ul class="statistic__text-list">
-                <li class="statistic__text-item">
-                  <h4 class="statistic__item-title">You watched</h4>
-                  <p class="statistic__item-text">22 <span class="statistic__item-description">movies</span></p>
-                </li>
-                <li class="statistic__text-item">
-                  <h4 class="statistic__item-title">Total duration</h4>
-                  <p class="statistic__item-text">130 <span class="statistic__item-description">h</span> 22 <span class="statistic__item-description">m</span></p>
-                </li>
-                <li class="statistic__text-item">
-                  <h4 class="statistic__item-title">Top genre</h4>
-                  <p class="statistic__item-text">Sci-Fi</p>
-                </li>
-              </ul>
-
-              <div class="statistic__chart-wrap">
-                <canvas class="statistic__chart" width="1000"></canvas>
-              </div>
-
             </section>`;
-  }
-
-  init() {
-    render(this._container, this.getElement());
   }
 
   hide() {
     this.getElement().classList.add(`visually-hidden`);
+
   }
 
   show() {
     this.getElement().classList.remove(`visually-hidden`);
   }
+
+  update() {
+    this.getElement().querySelector(`#statistic-all-time`).checked = true;
+    this._statisticChart.removeElement();
+    this._statisticChart = new StatisticChart(this._films.filter((film) => film.isWatched));
+    render(this.getElement(), this._statisticChart.getElement());
+
+  }
+
+  _init() {
+    render(this._container, this.getElement());
+    render(this.getElement(), this._statisticChart.getElement());
+
+    const statisticFilters = this.getElement()
+      .querySelector(`.statistic__filters`);
+
+    statisticFilters.addEventListener(`input`, () => {
+      const filter = new FormData(statisticFilters).get(`statistic-filter`);
+      this._showChart(filter);
+    });
+  }
+
+  _showChart(filter) {
+    let filteredFilms;
+
+    switch (filter) {
+      case StatisticType.ALL_TIME:
+        filteredFilms = this._films.filter((film) => film.isWatched);
+        break;
+      case StatisticType.TODAY:
+        filteredFilms = this._films.filter((film) => film.isWatched).filter((film) => {
+          return (moment(film.watchedDate).year() === moment().year())
+            && (moment(film.watchedDate).dayOfYear() === moment().dayOfYear());
+        });
+        break;
+      case StatisticType.WEEK:
+        filteredFilms = this._films
+          .filter((film) => film.isWatched)
+          .filter((film) => {
+            return (moment(film.watchedDate).year() === moment().year())
+              && (moment(film.watchedDate).week() === moment().week());
+          });
+        break;
+      case StatisticType.MONTH:
+        filteredFilms = this._films
+          .filter((film) => film.isWatched)
+          .filter((film) => {
+            return (moment(film.watchedDate).year() === moment().year())
+              && (moment(film.watchedDate).month() === moment().month());
+          });
+        break;
+      case StatisticType.YEAR:
+        filteredFilms = this._films
+          .filter((film) => film.isWatched)
+          .filter((film) => {
+            return moment(film.watchedDate).year() === moment().year();
+          });
+        break;
+
+    }
+    this._statisticChart.removeElement();
+    this._statisticChart = new StatisticChart(filteredFilms);
+    render(this.getElement(), this._statisticChart.getElement());
+
+  }
+
+
 }
