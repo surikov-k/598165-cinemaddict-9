@@ -3,20 +3,23 @@ import FilmDetails from "../components/film-details";
 import {render} from "../utils";
 import UserRating from "../components/user-rating";
 import Comments from "../components/comments";
+import {api} from "../main";
+import {ActionType} from "./cards-list-controller";
 
 export default class CardController {
-  constructor(container, film, comments, onDataChange, onViewChange, onFilmDetailsOpen, showDetails) {
+  constructor(container, film, onDataChange, onViewChange, onFilmDetailsOpen, showDetails) {
     this._container = container;
     this._film = film;
-    this._card = new FilmCard(this._film, this._comments);
-    this._cardDetails = new FilmDetails(this._film);
-    this._userRating = new UserRating(this._film, onDataChange);
-    this._comments = new Comments(film, comments, onDataChange);
-
+    this._comments = [];
     this._onDataChange = onDataChange;
     this._onViewChange = onViewChange;
     this._showDetails = showDetails;
     this._onFilmDetailsOpen = onFilmDetailsOpen;
+
+    this._card = new FilmCard(this._film);
+    this._cardDetails = new FilmDetails(this._film);
+    this._userRating = new UserRating(this._film, this._onDataChange);
+    this._commentsSection = new Comments(this._film, this._onDataChange);
 
     this._onEscKeydown = this._onEscKeydown.bind(this);
     this.setDefaultView = this.setDefaultView.bind(this);
@@ -28,7 +31,12 @@ export default class CardController {
 
     if (this._showDetails && !document.body.contains(document.querySelector(`.film-details`))) {
       this._cardDetails.getElement().style.animationDuration = `0s`;
-      this.showCardDetails();
+      api.getComments(this._film.id)
+        .then((comments) => {
+          this._onViewChange();
+          this.showCardDetails(comments);
+          this._onFilmDetailsOpen(this._film);
+        });
     }
 
     this._card.getElement()
@@ -39,9 +47,11 @@ export default class CardController {
           evt.target.classList.contains(`film-card__poster`)) {
 
           this._onViewChange();
-          this.showCardDetails();
-          this._onFilmDetailsOpen(this._film);
-
+          api.getComments(this._film.id)
+            .then((comments) => {
+              this.showCardDetails(comments);
+              this._onFilmDetailsOpen(this._film);
+            });
         }
       });
 
@@ -59,7 +69,7 @@ export default class CardController {
             classList.toggle(`film-card__controls-item--active`);
 
             filmUpdated.isAddedToWatchlist = !filmUpdated.isAddedToWatchlist;
-            this._onDataChange(filmUpdated, this._film);
+            this._onDataChange(ActionType.UPDATE_FILM, filmUpdated);
 
           } else if (classList
             .contains(`film-card__controls-item--mark-as-watched`)) {
@@ -67,20 +77,20 @@ export default class CardController {
             classList.toggle(`film-card__controls-item--active`);
             filmUpdated.isWatched = !filmUpdated.isWatched;
             if (!filmUpdated.isWatched) {
-              filmUpdated.userRating = 0;
+              filmUpdated.personalRating = 0;
               filmUpdated.watchedDate = null;
             } else {
               filmUpdated.watchedDate = new Date();
             }
 
-            this._onDataChange(filmUpdated, this._film);
+            this._onDataChange(ActionType.UPDATE_FILM, filmUpdated);
 
           } else if (classList
             .contains(`film-card__controls-item--favorite`)) {
 
             classList.toggle(`film-card__controls-item--active`);
             filmUpdated.isFavorite = !filmUpdated.isFavorite;
-            this._onDataChange(filmUpdated, this._film);
+            this._onDataChange(ActionType.UPDATE_FILM, filmUpdated);
 
           }
         });
@@ -95,25 +105,25 @@ export default class CardController {
           if (evt.target.getAttribute(`for`) === `watchlist`) {
 
             filmUpdated.isAddedToWatchlist = !filmUpdated.isAddedToWatchlist;
-            this._onDataChange(filmUpdated, this._film);
+            this._onDataChange(ActionType.UPDATE_FILM, filmUpdated);
             this._cardDetails.removeElement();
 
           } else if (evt.target.getAttribute(`for`) === `watched`) {
 
             filmUpdated.isWatched = !filmUpdated.isWatched;
             if (!filmUpdated.isWatched) {
-              filmUpdated.userRating = 0;
+              filmUpdated.personalRating = 0;
               filmUpdated.watchedDate = null;
             } else {
               filmUpdated.watchedDate = new Date();
             }
-            this._onDataChange(filmUpdated, this._film);
+            this._onDataChange(ActionType.UPDATE_FILM, filmUpdated);
             this._cardDetails.removeElement();
 
           } else if (evt.target.getAttribute(`for`) === `favorite`) {
 
             filmUpdated.isFavorite = !filmUpdated.isFavorite;
-            this._onDataChange(filmUpdated, this._film);
+            this._onDataChange(ActionType.UPDATE_FILM, filmUpdated);
             this._cardDetails.removeElement();
           }
         });
@@ -121,16 +131,14 @@ export default class CardController {
   }
 
 
-  showCardDetails() {
-
+  showCardDetails(comments) {
     render(document.querySelector(`body`), this._cardDetails.getElement());
+    this._commentsSection.init(this._cardDetails.getElement(), comments);
 
     if (this._film.isWatched) {
       this._userRating
         .init(this._cardDetails.getElement().querySelector(`.form-details__middle-container`));
     }
-
-    this._comments.init(this._cardDetails.getElement());
 
     document.addEventListener(`keydown`, this._onEscKeydown);
 

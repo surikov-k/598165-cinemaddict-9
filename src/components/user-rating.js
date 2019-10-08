@@ -1,12 +1,14 @@
 import AbstractComponet from "./abstract-component";
 import {render} from "../utils";
+import {ActionType} from "../controllers/cards-list-controller";
 
 export default class UserRating extends AbstractComponet {
   constructor(film, onDataChange) {
     super();
     this._film = film;
-    this._userRating = film.userRating;
+    this._personalRating = film.personalRating;
     this._onDataChange = onDataChange;
+
     this._filmUpdated = Object.assign({}, this._film);
 
   }
@@ -21,15 +23,15 @@ export default class UserRating extends AbstractComponet {
           return;
         }
 
-        this._filmUpdated.userRating = parseInt(evt.target.value, 10);
-        this._onDataChange(this._filmUpdated, this._film);
+        this._filmUpdated.personalRating = parseInt(evt.target.value, 10);
+        this._onDataChange(ActionType.UPDATE_FILM, this._filmUpdated);
       });
 
     this.getElement()
       .querySelector(`.film-details__watched-reset`)
       .addEventListener(`click`, () => {
-        this._filmUpdated.userRating = 0;
-        this._onDataChange(this._filmUpdated, this._film);
+        this._filmUpdated.personalRating = 0;
+        this._onDataChange(ActionType.UPDATE_FILM, this._filmUpdated);
       });
 
   }
@@ -52,7 +54,7 @@ export default class UserRating extends AbstractComponet {
 
           <div class="film-details__user-rating-score">
             ${new Array(9).fill(``).map((it, i) => {
-    return `<input type="radio" name="score" class="film-details__user-rating-input visually-hidden" value="${i + 1}" id="rating-${i + 1}" ${i + 1 === this._userRating ? `checked` : ``}>
+    return `<input type="radio" name="score" class="film-details__user-rating-input visually-hidden" value="${i + 1}" id="rating-${i + 1}" ${i + 1 === this._personalRating ? `checked` : ``}>
                 <label class="film-details__user-rating-label" for="rating-${i + 1}">${i + 1}</label>`;
   })}
 
