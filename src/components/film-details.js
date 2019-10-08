@@ -10,7 +10,7 @@ export default class FilmDetails extends AbstractComponet {
     this._title = film.title;
     this._originalTitle = film.originalTitle;
     this._director = film.director;
-    this._writres = film.writres;
+    this._writers = film.writers;
     this._actors = film.actors;
     this._poster = film.poster;
     this._rating = film.rating;
@@ -22,7 +22,7 @@ export default class FilmDetails extends AbstractComponet {
     this._isAddedToWatchlist = film.isAddedToWatchlist;
     this._isFavorite = film.isFavorite;
     this._isWatched = film.isWatched;
-    this._userRating = film.userRating;
+    this._personalRating = film.personalRating;
   }
 
   getTemplate() {
@@ -48,7 +48,7 @@ export default class FilmDetails extends AbstractComponet {
 
                         <div class="film-details__rating">
                           <p class="film-details__total-rating">${this._rating}</p>
-                          ${this._isWatched && this._userRating ? `<p class="film-details__user-rating">Your rate ${this._userRating}</p>` : ``}
+                          ${this._isWatched && this._personalRating ? `<p class="film-details__user-rating">Your rate ${this._personalRating}</p>` : ``}
 
                         </div>
                       </div>
@@ -60,7 +60,7 @@ export default class FilmDetails extends AbstractComponet {
                         </tr>
                         <tr class="film-details__row">
                           <td class="film-details__term">Writers</td>
-                          <td class="film-details__cell">${this._writres.join(`, `)}</td>
+                          <td class="film-details__cell">${this._writers.join(`, `)}</td>
                         </tr>
                         <tr class="film-details__row">
                           <td class="film-details__term">Actors</td>

@@ -15,13 +15,13 @@ export const FilmsListType = {
 const CARDS_PER_CLICK = 5;
 
 export default class FilmsSectonController {
-  constructor(container, films, comments, onDataChangePageController) {
+  constructor(container, films, onDataChangePageController) {
     this._container = container;
     this._films = films;
     this._onDataChangePageController = onDataChangePageController;
+
     this._filmsToDisplay = this._films.slice();
     this._cardsDisplayed = CARDS_PER_CLICK;
-    this._comments = comments;
     this._sort = new Sorting();
     this._showMore = new ShowMore();
     this._filmsSection = new FilmsSection();
@@ -108,7 +108,7 @@ export default class FilmsSectonController {
       });
     }
 
-    this._mainCardsListController.set(this._filmsToDisplay.slice(0, this._cardsDisplayed), this._comments);
+    this._mainCardsListController.set(this._filmsToDisplay.slice(0, this._cardsDisplayed));
     this._mainCardsListController.show();
     this._showExraSection();
   }
@@ -159,14 +159,14 @@ export default class FilmsSectonController {
 
     if (topRatedFilms.length) {
       render(this._filmsSection.getElement(), this._topRated.getElement());
-      this._topRatedCardListController.set(topRatedFilms, this._comments);
+      this._topRatedCardListController.set(topRatedFilms);
       this._topRatedCardListController.show();
     }
 
     if (mostCommentedFilms.length) {
       render(this._filmsSection.getElement(), this._mostCommented.getElement());
       this._mostCommentedCardListController
-        .set(mostCommentedFilms, this._comments);
+        .set(mostCommentedFilms);
       this._mostCommentedCardListController.show();
     }
   }

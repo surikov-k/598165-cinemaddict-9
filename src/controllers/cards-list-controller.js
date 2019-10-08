@@ -1,9 +1,16 @@
 import CardController from "./card-controller";
+import {api} from "../main";
+import ModelFilm from "../model-film";
+
+export const ActionType = {
+  UPDATE_FILM: `update film`,
+  ADD_COMMENT: `add comment`,
+  DELETE_COMMENT: `delete comment`
+};
 
 export default class CardsListController {
   constructor(container, onDataChangeMainController, onViewChangeMainController) {
-    this._films = null;
-    this._comments = null;
+    this._films = [];
     this._container = container;
     this._onDataChangeMainController = onDataChangeMainController;
     this._onViewChangeMainController = onViewChangeMainController;
@@ -15,9 +22,9 @@ export default class CardsListController {
     this._onFilmDetailsOpen = this._onFilmDetailsOpen.bind(this);
   }
 
-  set(films, comments) {
+  set(films) {
     this._films = films;
-    this._comments = comments;
+
   }
 
   show() {
@@ -25,37 +32,50 @@ export default class CardsListController {
 
     this._films.slice()
       .forEach((film) => {
-        this._renderCard(this._container, film, this._comments);
+        this._renderCard(this._container, film);
       });
-  }
-
-  _renderCard(container, film, comments) {
-    const cardController = new CardController(container, film, comments, this._onDataChange, this._onViewChangeMainController, this._onFilmDetailsOpen, film === this._filmDetailsOpen
-    );
-
-    this._subscriptions.push(cardController.setDefaultView);
-    cardController.init();
-  }
-
-  _onDataChange(newData, oldData) {
-    const idx = this._films.findIndex((film) => film === oldData);
-    Object.assign(this._films[idx], newData);
-
-    if (document.querySelector(`.film-details`)) {
-      document.querySelector(`.film-details`).remove();
-    }
-
-    this._onDataChangeMainController();
-
   }
 
   onViewChange() {
     this._subscriptions.forEach((it) => it());
   }
 
+  _renderCard(container, film) {
+    const cardController = new CardController(container, film, this._onDataChange, this._onViewChangeMainController, this._onFilmDetailsOpen, film === this._filmDetailsOpen);
+
+    this._subscriptions.push(cardController.setDefaultView);
+    cardController.init();
+  }
+
+  _onDataChange(action, film) {
+    let idx = this._films.findIndex((it) => it.id === film.id);
+
+    switch (action) {
+      case ActionType.ADD_COMMENT:
+        Object.assign(this._films[idx], film);
+        if (document.querySelector(`.film-details`)) {
+          document.querySelector(`.film-details`).remove();
+        }
+        this._onDataChangeMainController();
+        break;
+      case ActionType.UPDATE_FILM:
+        api.updateFilm(film.id, ModelFilm.toRaw(film))
+          .then((updatedFilm) => {
+            Object.assign(this._films[idx], updatedFilm);
+            if (document.querySelector(`.film-details`)) {
+              document.querySelector(`.film-details`).remove();
+            }
+            this._onDataChangeMainController();
+          });
+        break;
+    }
+
+    if (document.querySelector(`.film-details`)) {
+      document.querySelector(`.film-details`).remove();
+    }
+  }
+
   _onFilmDetailsOpen(film = null) {
     this._filmDetailsOpen = film;
   }
-
-
 }

@@ -8,18 +8,17 @@ const MIN_SEARCH_QUERY = 3;
 
 export default class PageController {
 
-  constructor(container, films, comments) {
+  constructor(container, films) {
     this._container = container;
     this._films = films;
-    this._comments = comments;
 
     this._onDataChangeForMainList = this._onDataChangeForMainList.bind(this);
     this._onDataChangeForSearchList = this._onDataChangeForSearchList.bind(this);
 
     this._navigation = new Navigation(this._films);
     this._statistic = new Statistic(this._container, this._films);
-    this._filmsSectionController = new FilmsSectonController(this._container, this._films, this._comments, this._onDataChangeForMainList);
-    this._searchController = new SearchController(this._container, this._films, this._comments, this._onDataChangeForSearchList);
+    this._filmsSectionController = new FilmsSectonController(this._container, this._films, this._onDataChangeForMainList);
+    this._searchController = new SearchController(this._container, this._films, this._onDataChangeForSearchList);
     this._filter = ``;
   }
 
