@@ -32,11 +32,6 @@ export default class API {
       .then(ModelFilm.parseFilms);
   }
 
-  getFilmsRaw() {
-    return this._load({url: `movies`})
-      .then(toJSON);
-  }
-
   updateFilm(id, film) {
     return this._load({
       url: `movies/${id}`,
@@ -87,4 +82,3 @@ export default class API {
       });
   }
 }
-

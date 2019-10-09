@@ -7,12 +7,12 @@ import Sorting from "../components/sorting";
 import CardsListController from "./cards-list-controller";
 import ShowMore from "../components/show-more";
 
+const CARDS_PER_CLICK = 5;
 
 export const FilmsListType = {
   TOP_RATED: `Top rated`,
   MOST_COMMENTED: `Most commented`
 };
-const CARDS_PER_CLICK = 5;
 
 export default class FilmsSectonController {
   constructor(container, films, onDataChangePageController) {
@@ -52,7 +52,6 @@ export default class FilmsSectonController {
 
   init() {
     if (this._films.length) {
-
       render(document.querySelector(`.main`), this._sort.getElement());
       this._sort.getElement()
         .addEventListener(`click`, (evt) => this._onSortLinkClick(evt));
@@ -102,13 +101,16 @@ export default class FilmsSectonController {
 
     if (this._filmsToDisplay.length > this._cardsDisplayed) {
       render(document.querySelector(`.films-list`), this._showMore.getElement());
-      this._showMore.getElement().addEventListener(`click`, () => {
-        this._cardsDisplayed += CARDS_PER_CLICK;
-        this.show();
-      });
+      this._showMore
+        .getElement()
+        .addEventListener(`click`, () => {
+          this._cardsDisplayed += CARDS_PER_CLICK;
+          this.show();
+        });
     }
 
-    this._mainCardsListController.set(this._filmsToDisplay.slice(0, this._cardsDisplayed));
+    this._mainCardsListController.
+      set(this._filmsToDisplay.slice(0, this._cardsDisplayed));
     this._mainCardsListController.show();
     this._showExraSection();
   }
@@ -150,8 +152,8 @@ export default class FilmsSectonController {
   _showExraSection() {
     const topRatedFilms =
       this._films.slice()
-      .filter((film) => film.rating)
-      .sort((a, b) => b.rating - a.rating).slice(0, 2);
+        .filter((film) => film.rating)
+        .sort((a, b) => b.rating - a.rating).slice(0, 2);
 
     const mostCommentedFilms = this._films.slice()
       .filter((film) => film.comments.length)
@@ -170,5 +172,4 @@ export default class FilmsSectonController {
       this._mostCommentedCardListController.show();
     }
   }
-
 }

@@ -1,27 +1,42 @@
 import moment from 'moment';
 import AbstractComponet from "./abstract-component";
-import {EmotionType} from '../data';
-import {render, encodeHTML} from '../utils';
+import {render, encodeHTML, shake} from '../utils';
 import {api} from "../main";
 import ModelComment from '../model-comment';
 import {ActionType} from '../controllers/cards-list-controller';
+
+const EmotionType = {
+  SMILE: `smile`,
+  SLEEPING: `sleeping`,
+  PUKE: `puke`,
+  ANGRY: `angry`,
+  src: {
+    'smile': `images/emoji/smile.png`,
+    'sleeping': `images/emoji/sleeping.png`,
+    'puke': `images/emoji/puke.png`,
+    'angry': `images/emoji/angry.png`,
+  }
+};
 
 export default class Comments extends AbstractComponet {
   constructor(film, onDataChange) {
     super();
     this._film = film;
+    this._onDataChange = onDataChange;
+
     this._filmUpdated = Object.assign({}, this._film);
     this._comments = [];
-    this._onDataChange = onDataChange;
   }
 
   init(container, comments) {
     this._comments = comments;
     render(container.querySelector(`.form-details__bottom-container`), this.getElement());
+    const commentInput = this.getElement()
+      .querySelector(`.film-details__comment-input`);
+
     this._changeImoji();
 
-    this.getElement()
-      .querySelector(`.film-details__comment-input`)
+    commentInput
       .addEventListener(`keydown`, (evt) => {
         if (evt.key === `Enter` && (evt.ctrlKey || evt.metaKey)) {
           const commentText = encodeHTML(evt.target.value);
@@ -33,9 +48,18 @@ export default class Comments extends AbstractComponet {
             emotion: emotion || EmotionType.SMILE,
           };
 
+          commentInput.classList.remove(`connection-error`);
+          this._blockInputs(true);
+
           api.createComment(this._film.id, ModelComment.toRaw(newComment))
             .then((response) => {
+              this._blockInputs(false);
               this._onDataChange(ActionType.ADD_COMMENT, response.film);
+            })
+            .catch(() => {
+              shake(commentInput);
+              commentInput.classList.add(`connection-error`);
+              this._blockInputs(false);
             });
         }
       });
@@ -45,8 +69,13 @@ export default class Comments extends AbstractComponet {
       .forEach((it) => {
         it.addEventListener(`click`, (evt) => {
           evt.preventDefault();
+          const deleteButton = evt.target;
           const commentToDelete = evt.target.dataset.commentId;
-          const indexToDelete = this._filmUpdated.comments.findIndex((comment) => comment === commentToDelete);
+          const indexToDelete = this._filmUpdated.comments
+            .findIndex((comment) => comment === commentToDelete);
+
+          deleteButton.innerText = `Deleting...`;
+          deleteButton.disabled = true;
 
           api.deleteComment(commentToDelete)
             .then(() => {
@@ -54,8 +83,24 @@ export default class Comments extends AbstractComponet {
                 [...this._filmUpdated.comments.slice(0, indexToDelete), ...this._filmUpdated.comments.slice(indexToDelete + 1)];
 
               this._onDataChange(ActionType.ADD_COMMENT, this._filmUpdated);
+            })
+            .catch(() => {
+              deleteButton.innerText = `Delete`;
+              deleteButton.disabled = false;
             });
         });
+      });
+  }
+
+  _blockInputs(state) {
+    this.getElement()
+      .querySelector(`.film-details__comment-input`)
+      .disabled = state;
+
+    this.getElement()
+      .querySelectorAll(`input`)
+      .forEach((input) => {
+        input.disabled = state;
       });
   }
 
@@ -64,8 +109,9 @@ export default class Comments extends AbstractComponet {
     <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${this._film.comments.length}</span></h3>
 
   <ul class="film-details__comments-list">
-  ${this._comments.map((comment) => {
-    return `<li class="film-details__comment">
+  ${this._comments
+        .map((comment) => {
+          return `<li class="film-details__comment">
     <span class="film-details__comment-emoji">
       <img src="${EmotionType.src[comment.emotion]}" width="55" height="55" alt="emoji">
     </span>
@@ -80,7 +126,7 @@ export default class Comments extends AbstractComponet {
       </p>
     </div>
   </li>`;
-  }).join(``)}
+        }).join(``)}
   </ul>
 
   <div class="film-details__new-comment">
@@ -89,7 +135,7 @@ export default class Comments extends AbstractComponet {
     </div>
 
     <label class="film-details__comment-label">
-      <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">Great movie!</textarea>
+      <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment" ></textarea>
     </label>
 
     <div class="film-details__emoji-list">
@@ -133,6 +179,4 @@ export default class Comments extends AbstractComponet {
         }
       });
   }
-
 }
-
