@@ -121,7 +121,7 @@ export default class Comments extends AbstractComponet {
       </p>
       <p class="film-details__comment-info">
         <span class="film-details__comment-author">${comment.user}</span>
-        <span class="film-details__comment-day">${moment(comment.created).format(`YY/MM/DD HH: MM`)}</span>
+        <span class="film-details__comment-day">${this._formatPostingTime(comment.created)}</span>
         <button class="film-details__comment-delete" data-comment-id="${comment.id}">Delete</button>
       </p>
     </div>
@@ -178,5 +178,9 @@ export default class Comments extends AbstractComponet {
           addEmojiLabel.style.display = `block`;
         }
       });
+  }
+
+  _formatPostingTime(postingTime) {
+    return moment.duration(moment(postingTime).diff(moment())).humanize(true);
   }
 }
