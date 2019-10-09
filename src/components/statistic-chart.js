@@ -124,5 +124,4 @@ export default class StatisticChart extends AbstractComponet {
     const maxIndex = Object.values(this._genres).findIndex((value) => value === maxCount);
     return Object.entries(this._genres)[maxIndex][0];
   }
-
 }
