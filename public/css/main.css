@@ -1102,6 +1102,6 @@ button {
     animation: shake 0.6s;
   }
   .connection-error {
-    border: 1px solid red;
-    box-shadow: 0px 0px 20px 10px red;
+    border: 2px solid red;
+    box-shadow: 0px 0px 15px 10px rgba(255, 0, 0, 0.5);
   }

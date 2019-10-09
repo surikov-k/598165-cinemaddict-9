@@ -1,5 +1,7 @@
 import AbstractComponet from "./abstract-component";
 import {formatDuration} from "../utils";
+
+const DESCRIPTION_MAX_LENGHT = 140;
 export default class FilmCard extends AbstractComponet {
   constructor(film) {
     super();
@@ -38,11 +40,9 @@ export default class FilmCard extends AbstractComponet {
   }
 
   _tuncateDescription() {
-    if (this._description.length <= 140) {
-      return this._description;
-    } else {
-      return this._description.slice(0, 139) + `&hellip;`;
-    }
+    return this._description.length <= DESCRIPTION_MAX_LENGHT ?
+      this._description :
+      this._description
+        .slice(0, DESCRIPTION_MAX_LENGHT - 1) + `&hellip;`;
   }
-
 }

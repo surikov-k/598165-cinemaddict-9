@@ -12,7 +12,7 @@ export default class SearchController {
     this._container = container;
     this._films = films;
     this._comments = comments;
-    this._searchResults = new SearchResults(0);
+    this._searchResults = new SearchResults();
     this._filmsSection = new FilmsSection();
     this._filmsList = new FilmsList();
     this._showMore = new ShowMore();
@@ -67,7 +67,6 @@ export default class SearchController {
   _onDataChangeSearchSection() {
     this._searchListController.show();
     this._onDataChangePageController();
-
   }
 
   _onViewChangeSearchSection() {

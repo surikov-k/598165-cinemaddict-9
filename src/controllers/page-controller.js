@@ -5,7 +5,7 @@ import {render, Position} from '../utils';
 import SearchController from './search-controller';
 
 const MIN_SEARCH_QUERY = 3;
-
+const DEBOUNCE_INTERVAL = 300;
 export default class PageController {
 
   constructor(container, films) {
@@ -78,16 +78,7 @@ export default class PageController {
   _searchInit() {
     document.querySelector(`.header__search`)
       .addEventListener(`input`, (evt) => {
-        if (evt.target.value.length >= MIN_SEARCH_QUERY) {
-          this._filmsSectionController.hide();
-          this._statistic.hide();
-          this._navigation.hide();
-          this._searchController.setQuery(evt.target.value);
-          this._searchController.init();
-
-        } else {
-          this._hideSearchResults();
-        }
+        this._searchDebounce(evt);
       });
 
     document.querySelector(`.header__search`)
@@ -101,5 +92,23 @@ export default class PageController {
     this._navigation.show();
     this._searchController.hide();
     this._toggleNavLinkStyle(this._navigation.getElement().querySelector(`[href="#all"]`));
+  }
+
+  _searchDebounce(evt) {
+    let timeout;
+    if (timeout) {
+      window.clearTimeout(timeout);
+    }
+    timeout = window.setTimeout(() => {
+      if (evt.target.value.length >= MIN_SEARCH_QUERY) {
+        this._filmsSectionController.hide();
+        this._statistic.hide();
+        this._navigation.hide();
+        this._searchController.setQuery(evt.target.value);
+        this._searchController.init();
+      } else {
+        this._hideSearchResults();
+      }
+    }, DEBOUNCE_INTERVAL);
   }
 }
