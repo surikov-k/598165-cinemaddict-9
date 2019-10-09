@@ -3,6 +3,9 @@ import {api} from "../main";
 import ModelFilm from "../model-film";
 import {shake} from "../utils";
 
+const DEFAULT_BACKGROUND_COLOR = `#121213`;
+const ERROR_COLOR = `rgba(255, 0, 0, 0.3)`;
+
 export const ActionType = {
   UPDATE_FILM: `update film`,
   UPDATE_RATING: `update rating`,
@@ -69,7 +72,7 @@ export default class CardsListController {
         ratingInputs.forEach((input) => {
           input.disabled = true;
         });
-        userRatingWrap.style.backgroundColor = `#121213`;
+        userRatingWrap.style.backgroundColor = DEFAULT_BACKGROUND_COLOR;
 
 
         api.updateFilm(film.id, ModelFilm.toRaw(film))
@@ -85,7 +88,7 @@ export default class CardsListController {
           })
           .catch(() => {
             shake(userRatingWrap);
-            userRatingWrap.style.backgroundColor = `rgba(255, 0, 0, 0.3)`;
+            userRatingWrap.style.backgroundColor = ERROR_COLOR;
             ratingInputs.forEach((input) => {
               input.checked = false;
               input.disabled = false;

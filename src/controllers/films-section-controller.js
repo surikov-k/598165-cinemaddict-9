@@ -8,6 +8,7 @@ import CardsListController from "./cards-list-controller";
 import ShowMore from "../components/show-more";
 
 const CARDS_PER_CLICK = 5;
+const CARDS_IN_EXTRA_SECTION = 2;
 
 export const FilmsListType = {
   TOP_RATED: `Top rated`,
@@ -153,11 +154,11 @@ export default class FilmsSectonController {
     const topRatedFilms =
       this._films.slice()
         .filter((film) => film.rating)
-        .sort((a, b) => b.rating - a.rating).slice(0, 2);
+        .sort((a, b) => b.rating - a.rating).slice(0, CARDS_IN_EXTRA_SECTION);
 
     const mostCommentedFilms = this._films.slice()
       .filter((film) => film.comments.length)
-      .sort((a, b) => (b.comments.length - a.comments.length)).slice(0, 2);
+      .sort((a, b) => (b.comments.length - a.comments.length)).slice(0, CARDS_IN_EXTRA_SECTION);
 
     if (topRatedFilms.length) {
       render(this._filmsSection.getElement(), this._topRated.getElement());

@@ -1,9 +1,14 @@
 import AbstractComponet from "./abstract-component";
 
 const UserRating = {
-  beginner: `Novice`,
-  intermediate: `Fan`,
-  advanced: `Movie Buff`
+  BEGINNER: `Novice`,
+  INTERMEDIATE: `Fan`,
+  ADVANCED: `Movie Buff`,
+  value: {
+    'Novice': 10,
+    'Fan': 20,
+    'Movie Buff': 30,
+  }
 };
 export default class Profile extends AbstractComponet {
   constructor({moviesWatched}) {
@@ -12,15 +17,14 @@ export default class Profile extends AbstractComponet {
   }
 
   static getUserRating(rating) {
-    if (rating <= 10) {
-      return UserRating.beginner;
-    } else if (rating >= 11 && rating <= 20) {
-      return UserRating.intermediate;
-    } else if (rating >= 21) {
-      return UserRating.advanced;
-    } else {
-      return undefined;
+    if (rating <= UserRating.value[UserRating.BEGINNER]) {
+      return UserRating.BEGINNER;
+    } else if (rating >= UserRating.value[UserRating.BEGINNER] + 1 && rating <= UserRating.value[UserRating.INTERMEDIATE]) {
+      return UserRating.INTERMEDIATE;
+    } else if (rating >= UserRating.value[UserRating.INTERMEDIATE] + 1) {
+      return UserRating.ADVANCED;
     }
+    return undefined;
   }
 
   getTemplate() {

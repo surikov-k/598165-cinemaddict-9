@@ -67,7 +67,6 @@ export default class SearchController {
   _onDataChangeSearchSection() {
     this._searchListController.show();
     this._onDataChangePageController();
-
   }
 
   _onViewChangeSearchSection() {

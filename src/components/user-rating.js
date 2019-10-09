@@ -1,6 +1,9 @@
 import AbstractComponet from "./abstract-component";
 import {render} from "../utils";
 import {ActionType} from "../controllers/cards-list-controller";
+
+const PERSONAL_RATING_SCALE = 9;
+
 export default class UserRating extends AbstractComponet {
   constructor(film, onDataChange) {
     super();
@@ -51,7 +54,7 @@ export default class UserRating extends AbstractComponet {
           <p class="film-details__user-rating-feelings">How you feel it?</p>
 
           <div class="film-details__user-rating-score">
-            ${new Array(9).fill(``).map((it, i) => {
+            ${new Array(PERSONAL_RATING_SCALE).fill(``).map((it, i) => {
     return `<input type="radio" name="score" class="film-details__user-rating-input visually-hidden" value="${i + 1}" id="rating-${i + 1}" ${i + 1 === this._personalRating ? `checked` : ``}>
                 <label class="film-details__user-rating-label" for="rating-${i + 1}">${i + 1}</label>`;
   })}
