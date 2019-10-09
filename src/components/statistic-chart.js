@@ -42,8 +42,8 @@ export default class StatisticChart extends AbstractComponet {
     const data = Object.values(this._genres);
 
     const ctx = this.getElement().querySelector(`.statistic__chart`);
-    // eslint-disable-next-line no-unused-vars
-    const chart = new Chart(ctx, {
+
+    void new Chart(ctx, {
       plugins: [ChartDataLabels],
       type: `horizontalBar`,
       data: {
@@ -124,5 +124,4 @@ export default class StatisticChart extends AbstractComponet {
     const maxIndex = Object.values(this._genres).findIndex((value) => value === maxCount);
     return Object.entries(this._genres)[maxIndex][0];
   }
-
 }
