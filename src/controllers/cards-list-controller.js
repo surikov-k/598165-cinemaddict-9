@@ -69,6 +69,8 @@ export default class CardsListController {
         ratingInputs.forEach((input) => {
           input.disabled = true;
         });
+        userRatingWrap.style.backgroundColor = `#121213`;
+
 
         api.updateFilm(film.id, ModelFilm.toRaw(film))
           .then((updatedFilm) => {
