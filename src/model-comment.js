@@ -24,5 +24,4 @@ export default class ModelComment {
       "emotion": comment.emotion,
     };
   }
-
 }

@@ -36,12 +36,6 @@ export default class Navigation extends AbstractComponet {
             </nav>`;
   }
 
-  _getFilterTemplate(filter) {
-    return `<a href="#${filter.name.toLowerCase()}" class="main-navigation__item">${filter.name}
-              <span class="main-navigation__item-count">${filter.count}</span>
-              </a>`;
-  }
-
   update() {
     this.getElement()
       .querySelector(`[href="#watchlist"]`)
@@ -57,5 +51,11 @@ export default class Navigation extends AbstractComponet {
       .querySelector(`[href="#favorites"]`)
       .querySelector(`.main-navigation__item-count`)
       .innerText = this._films.filter((film) => film.isFavorite).length;
+  }
+
+  _getFilterTemplate(filter) {
+    return `<a href="#${filter.name.toLowerCase()}" class="main-navigation__item">${filter.name}
+              <span class="main-navigation__item-count">${filter.count}</span>
+              </a>`;
   }
 }

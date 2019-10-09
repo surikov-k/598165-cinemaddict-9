@@ -1,3 +1,5 @@
+const ANIMATION_TIMEOUT = 600;
+
 export const Position = {
   AFTERBEGING: `afterbegin`,
   BEFOREEND: `beforeend`
@@ -35,4 +37,10 @@ export const formatDuration = (duration) => {
   return {h: hours, m: duration - hours * 60};
 };
 
+export const shake = (element) => {
+  element.style.animation = `shake ${ANIMATION_TIMEOUT / 1000}s`;
 
+  setTimeout(() => {
+    element.style.animation = ``;
+  }, ANIMATION_TIMEOUT);
+};

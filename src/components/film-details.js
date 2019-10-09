@@ -1,5 +1,4 @@
 import moment from "moment";
-
 import AbstractComponet from "./abstract-component";
 import {formatDuration} from "../utils";
 
@@ -114,5 +113,4 @@ export default class FilmDetails extends AbstractComponet {
 
                 <div class="form-details__bottom-container"></div>`;
   }
-
 }

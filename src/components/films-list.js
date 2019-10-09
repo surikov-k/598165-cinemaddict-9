@@ -9,4 +9,3 @@ export default class FilmsList extends AbstractComponet {
             </section>`;
   }
 }
-

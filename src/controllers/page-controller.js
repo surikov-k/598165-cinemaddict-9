@@ -23,7 +23,6 @@ export default class PageController {
   }
 
   init() {
-
     render(this._container, this._navigation.getElement(), Position.AFTERBEGING);
     this._filmsSectionController.init();
     this._statistic.hide();
@@ -43,7 +42,8 @@ export default class PageController {
           case `#history`:
           case `#favorites`:
             this._statistic.hide();
-            this._filmsSectionController.setFilter(this._filter);
+            this._filmsSectionController
+              .setFilter(this._filter);
             this._toggleNavLinkStyle(evt.target);
             break;
 
@@ -103,4 +103,3 @@ export default class PageController {
     this._toggleNavLinkStyle(this._navigation.getElement().querySelector(`[href="#all"]`));
   }
 }
-

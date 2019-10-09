@@ -5,7 +5,6 @@ import FilmsList from "../components/films-list";
 import CardsListController from "./cards-list-controller";
 import ShowMore from "../components/show-more";
 
-
 const CARDS_PER_CLICK = 5;
 
 export default class SearchController {
@@ -60,8 +59,8 @@ export default class SearchController {
       });
     }
 
-
-    this._searchListController.set(this._filmsToDisplay.slice(0, this._cardsDisplayed), this._comments);
+    this._searchListController
+      .set(this._filmsToDisplay.slice(0, this._cardsDisplayed), this._comments);
     this._searchListController.show();
   }
 

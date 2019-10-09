@@ -130,14 +130,14 @@ export default class CardController {
       });
   }
 
-
   showCardDetails(comments) {
     render(document.querySelector(`body`), this._cardDetails.getElement());
     this._commentsSection.init(this._cardDetails.getElement(), comments);
 
     if (this._film.isWatched) {
       this._userRating
-        .init(this._cardDetails.getElement().querySelector(`.form-details__middle-container`));
+        .init(this._cardDetails.getElement()
+          .querySelector(`.form-details__middle-container`));
     }
 
     document.addEventListener(`keydown`, this._onEscKeydown);
@@ -145,6 +145,9 @@ export default class CardController {
     this._cardDetails.getElement()
       .querySelector(`.film-details__comment-input`)
       .addEventListener(`focus`, () => {
+        this._cardDetails.getElement()
+          .querySelector(`.film-details__comment-input`)
+          .classList.remove(`connection-error`);
         document.removeEventListener(`keydown`, this._onEscKeydown);
       });
 
@@ -162,7 +165,6 @@ export default class CardController {
       });
   }
 
-
   setDefaultView() {
     if (document.body.contains(this._cardDetails.getElement())) {
       this._cardDetails.removeElement();
@@ -177,10 +179,12 @@ export default class CardController {
     if (evt.key === `Esc` || evt.key === `Escape`) {
       evt.preventDefault();
       this._onFilmDetailsOpen();
+      this._cardDetails.getElement()
+        .querySelector(`.film-details__comment-input`)
+        .classList.remove(`connection-error`);
 
       this._cardDetails.getElement().remove();
       document.removeEventListener(`keydown`, this._onEscKeydown);
     }
   }
-
 }

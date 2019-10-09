@@ -2,7 +2,6 @@ import moment from "moment";
 import AbstractComponet from "./abstract-component";
 import {render} from "../utils";
 import StatisticChart from "./statistic-chart";
-import {user} from "../data";
 import Profile from "./profile";
 
 const StatisticType = {
@@ -28,7 +27,10 @@ export default class Statistic extends AbstractComponet {
               <p class="statistic__rank">
                 Your rank
                 <img class="statistic__img" src="images/bitmap@2x.png" alt="Avatar" width="35" height="35">
-                <span class="statistic__rank-label">${Profile.getUserRating(user.moviesWatched)}</span>
+                <span class="statistic__rank-label">${Profile
+        .getUserRating(this._films.reduce((total, film) => {
+          return film.isWatched ? ++total : total;
+        }, 0))}</span>
               </p>
 
               <form action="https://echo.htmlacademy.ru/" method="get" class="statistic__filters">
@@ -90,12 +92,14 @@ export default class Statistic extends AbstractComponet {
       case StatisticType.ALL_TIME:
         filteredFilms = this._films.filter((film) => film.isWatched);
         break;
+
       case StatisticType.TODAY:
         filteredFilms = this._films.filter((film) => film.isWatched).filter((film) => {
           return (moment(film.watchedDate).year() === moment().year())
             && (moment(film.watchedDate).dayOfYear() === moment().dayOfYear());
         });
         break;
+
       case StatisticType.WEEK:
         filteredFilms = this._films
           .filter((film) => film.isWatched)
@@ -104,6 +108,7 @@ export default class Statistic extends AbstractComponet {
               && (moment(film.watchedDate).week() === moment().week());
           });
         break;
+
       case StatisticType.MONTH:
         filteredFilms = this._films
           .filter((film) => film.isWatched)
@@ -112,6 +117,7 @@ export default class Statistic extends AbstractComponet {
               && (moment(film.watchedDate).month() === moment().month());
           });
         break;
+
       case StatisticType.YEAR:
         filteredFilms = this._films
           .filter((film) => film.isWatched)
@@ -126,6 +132,4 @@ export default class Statistic extends AbstractComponet {
     render(this.getElement(), this._statisticChart.getElement());
 
   }
-
-
 }
