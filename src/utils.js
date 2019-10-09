@@ -44,3 +44,7 @@ export const shake = (element) => {
     element.style.animation = ``;
   }, ANIMATION_TIMEOUT);
 };
+
+export const objectToArray = (object) => {
+  return Object.keys(object).map((key) => object[key]);
+};

@@ -1,7 +1,7 @@
 import moment from 'moment';
 import AbstractComponet from "./abstract-component";
 import {render, encodeHTML, shake} from '../utils';
-import {api} from "../main";
+import {provider} from "../main";
 import ModelComment from '../model-comment';
 import {ActionType} from '../controllers/cards-list-controller';
 
@@ -51,7 +51,7 @@ export default class Comments extends AbstractComponet {
           commentInput.classList.remove(`connection-error`);
           this._blockInputs(true);
 
-          api.createComment(this._film.id, ModelComment.toRaw(newComment))
+          provider.createComment(this._film.id, ModelComment.toRaw(newComment))
             .then((response) => {
               this._blockInputs(false);
               this._onDataChange(ActionType.ADD_COMMENT, response.film);
@@ -62,6 +62,26 @@ export default class Comments extends AbstractComponet {
               this._blockInputs(false);
             });
         }
+
+        window.addEventListener(`offline`, () => {
+          this._blockInputs(true);
+
+          this.getElement()
+            .querySelectorAll(`.film-details__comment-delete`)
+            .forEach((button) => {
+              button.disabled = true;
+            });
+        });
+
+        window.addEventListener(`online`, () => {
+          this._blockInputs(false);
+
+          this.getElement()
+            .querySelectorAll(`.film-details__comment-delete`)
+            .forEach((button) => {
+              button.disabled = false;
+            });
+        });
       });
 
     this.getElement()
@@ -77,7 +97,7 @@ export default class Comments extends AbstractComponet {
           deleteButton.innerText = `Deleting...`;
           deleteButton.disabled = true;
 
-          api.deleteComment(commentToDelete)
+          provider.deleteComment(commentToDelete)
             .then(() => {
               this._filmUpdated.comments =
                 [...this._filmUpdated.comments.slice(0, indexToDelete), ...this._filmUpdated.comments.slice(indexToDelete + 1)];

@@ -1,5 +1,5 @@
 import CardController from "./card-controller";
-import {api} from "../main";
+import {provider} from "../main";
 import ModelFilm from "../model-film";
 import {shake} from "../utils";
 
@@ -75,7 +75,7 @@ export default class CardsListController {
         userRatingWrap.style.backgroundColor = DEFAULT_BACKGROUND_COLOR;
 
 
-        api.updateFilm(film.id, ModelFilm.toRaw(film))
+        provider.updateFilm(film.id, ModelFilm.toRaw(film))
           .then((updatedFilm) => {
             ratingInputs.forEach((input) => {
               input.disabled = false;
@@ -97,7 +97,7 @@ export default class CardsListController {
         break;
 
       case ActionType.UPDATE_FILM:
-        api.updateFilm(film.id, ModelFilm.toRaw(film))
+        provider.updateFilm(film.id, ModelFilm.toRaw(film))
           .then((updatedFilm) => {
             Object.assign(this._films[idx], updatedFilm);
             if (document.querySelector(`.film-details`)) {
