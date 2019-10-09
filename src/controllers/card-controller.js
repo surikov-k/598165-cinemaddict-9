@@ -3,7 +3,7 @@ import FilmDetails from "../components/film-details";
 import {render} from "../utils";
 import UserRating from "../components/user-rating";
 import Comments from "../components/comments";
-import {api} from "../main";
+import {provider} from "../main";
 import {ActionType} from "./cards-list-controller";
 
 export default class CardController {
@@ -31,7 +31,7 @@ export default class CardController {
 
     if (this._showDetails && !document.body.contains(document.querySelector(`.film-details`))) {
       this._cardDetails.getElement().style.animationDuration = `0s`;
-      api.getComments(this._film.id)
+      provider.getComments(this._film.id)
         .then((comments) => {
           this._onViewChange();
           this.showCardDetails(comments);
@@ -47,7 +47,7 @@ export default class CardController {
           evt.target.classList.contains(`film-card__poster`)) {
 
           this._onViewChange();
-          api.getComments(this._film.id)
+          provider.getComments(this._film.id)
             .then((comments) => {
               this.showCardDetails(comments);
               this._onFilmDetailsOpen(this._film);

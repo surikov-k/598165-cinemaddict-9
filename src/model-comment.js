@@ -19,7 +19,9 @@ export default class ModelComment {
 
   static toRaw(comment) {
     return {
+      "id": comment.id,
       "comment": comment.text,
+      "author": comment.user,
       "date": new Date(comment.created).toISOString(),
       "emotion": comment.emotion,
     };
